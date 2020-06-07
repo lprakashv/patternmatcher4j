@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.lprakashv.matcher.MatcherTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2020-06-07T20:06:39" hostname="m-c02x56h8jg5h" time="0.009">
+  <properties/>
+  <testcase name="testMatchDefault" classname="io.github.lprakashv.matcher.MatcherTest" time="0.009"/>
+  <testcase name="testMatchGod" classname="io.github.lprakashv.matcher.MatcherTest" time="0.0"/>
+  <testcase name="testMatchHuman" classname="io.github.lprakashv.matcher.MatcherTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
