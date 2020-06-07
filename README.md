@@ -3,6 +3,8 @@ An FP style pattern matcher library for Java
 
 ### Example
 ```java
+// Assume some Person objects as : Person(name, age, eligible)
+
 String evaluatedActionAfterProperMatch = 
   Matcher.<Person, String>matches(person)
     //destructuring of the object
