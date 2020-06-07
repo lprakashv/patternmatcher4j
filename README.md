@@ -18,9 +18,17 @@ String evaluatedActionAfterProperMatch =
         PredicateMatch.with(Integer.class, a -> (Integer) a < 60)
       ),
       FieldMatch.with("eligible", ValueMatch.with(true))
-  )).then(p -> "Human with name = Lalit")
+  ))
+  .then(p -> "Human with name = Lalit")
   .caseMatch(DestructuredMatch.of(
     FieldMatch.with("age", ValueMatch.with(null))
-  )).then(p -> "God!")
+  ))
+  .then(p -> "God!")
   .evaluate("Unknown");
 ```
+
+We can use following matches:
+* `DestructuredMatch.of(FieldMatch... fieldMatches)` with each fields name and a pattern (nested matching possible!) defined.
+* `ValueMatch.with(Object value)`.
+* `TypeMatch.with(Class<?> type)`.
+* `PredicateMatch.with(Class<?> type, Function<Object, Boolean> predicate)` this extends TypeMatch, which makes sense as we will have to cast the argument in the predicate function.
