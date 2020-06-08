@@ -25,7 +25,7 @@ public class Matcher<T, R> {
     this.caseActions = caseActions;
   }
 
-  public static <T1, R1> Matcher<T1, R1> match(T1 matchedObject) {
+  public static <T1, R1> Matcher<T1, R1> matchFor(T1 matchedObject) {
     return new Matcher<>(matchedObject);
   }
 

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public abstract class Match {
 
@@ -17,13 +18,24 @@ public abstract class Match {
   public boolean matches(Object object) {
     switch (getMatchType()) {
       case CLASS:
-        return object != null && object.getClass() == getMatch();
+        return object != null && object.getClass() == ((Class<?>) getMatch());
       case DESTRUCTURED:
-        if (object == null) return false;
+        if (object == null) {
+          return false;
+        }
 
         Map<String, Field> fieldMatches = (Map<String, Field>) getMatch();
 
-        return Arrays.stream(object.getClass().getDeclaredFields())
+        java.lang.reflect.Field[] declaredFields = object.getClass().getDeclaredFields();
+
+        Map<String, java.lang.reflect.Field> allFieldsMap =
+            Arrays.stream(declaredFields).collect(Collectors.toMap(df -> df.getName(), df -> df));
+
+        if (fieldMatches.keySet().stream().anyMatch(k -> !allFieldsMap.containsKey(k))) {
+          return false;
+        }
+
+        return Arrays.stream(declaredFields)
             .allMatch(field -> {
               field.setAccessible(true);
               if (fieldMatches.containsKey(field.getName())) {

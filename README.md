@@ -7,7 +7,8 @@ An FP style pattern matcher library for Java
 // Assume some Person objects as : Person(name, age, eligible, Object extra)
 
 String stringFromObjectPatternMatching = 
-    Matcher.<Object, String>match((Object) person)
+    Matcher
+        .<Object, String>matchFor((Object) person)
         .matchCase( // any number of field matches
             // this is a field with predicate match with Function<Object, Boolean> passed
             Field.with("name", name -> ((String) name).toLowerCase().equals("lalit")),
