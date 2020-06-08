@@ -1,4 +1,7 @@
 dist: trusty
+
+install: gradle wrapper --gradle-version 6.4
+
 language: java
 jdk: openjdk8
 
