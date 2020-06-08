@@ -1,8 +1,8 @@
-package io.github.lprakashv.matcher;
+package io.github.lprakashv.patternmatcher4j.matcher;
 
-import io.github.lprakashv.match.DestructuredMatch.Field;
-import io.github.lprakashv.matcher.models.NonPerson;
-import io.github.lprakashv.matcher.models.Person;
+import io.github.lprakashv.patternmatcher4j.match.DestructuredMatch.Field;
+import io.github.lprakashv.patternmatcher4j.matcher.models.NonPerson;
+import io.github.lprakashv.patternmatcher4j.matcher.models.Person;
 import org.junit.Assert;
 import org.junit.Test;
 

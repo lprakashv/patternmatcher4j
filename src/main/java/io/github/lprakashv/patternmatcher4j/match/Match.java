@@ -1,7 +1,7 @@
-package io.github.lprakashv.match;
+package io.github.lprakashv.patternmatcher4j.match;
 
-import io.github.lprakashv.constants.MatchType;
-import io.github.lprakashv.match.DestructuredMatch.Field;
+import io.github.lprakashv.patternmatcher4j.constants.MatchType;
+import io.github.lprakashv.patternmatcher4j.match.DestructuredMatch.Field;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;

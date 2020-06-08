@@ -1,10 +1,10 @@
-package io.github.lprakashv.matcher;
+package io.github.lprakashv.patternmatcher4j.matcher;
 
-import io.github.lprakashv.match.DestructuredMatch;
-import io.github.lprakashv.match.Match;
-import io.github.lprakashv.match.PredicateMatch;
-import io.github.lprakashv.match.TypeMatch;
-import io.github.lprakashv.match.ValueMatch;
+import io.github.lprakashv.patternmatcher4j.match.DestructuredMatch;
+import io.github.lprakashv.patternmatcher4j.match.Match;
+import io.github.lprakashv.patternmatcher4j.match.PredicateMatch;
+import io.github.lprakashv.patternmatcher4j.match.TypeMatch;
+import io.github.lprakashv.patternmatcher4j.match.ValueMatch;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

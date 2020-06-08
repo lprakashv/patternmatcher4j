@@ -1,6 +1,6 @@
-package io.github.lprakashv.match;
+package io.github.lprakashv.patternmatcher4j.match;
 
-import io.github.lprakashv.constants.MatchType;
+import io.github.lprakashv.patternmatcher4j.constants.MatchType;
 import java.util.function.Function;
 
 public class PredicateMatch extends Match {

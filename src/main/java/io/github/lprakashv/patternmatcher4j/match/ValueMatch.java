@@ -1,6 +1,6 @@
-package io.github.lprakashv.match;
+package io.github.lprakashv.patternmatcher4j.match;
 
-import io.github.lprakashv.constants.MatchType;
+import io.github.lprakashv.patternmatcher4j.constants.MatchType;
 
 public class ValueMatch extends Match {
 

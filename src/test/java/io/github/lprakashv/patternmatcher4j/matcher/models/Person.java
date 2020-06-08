@@ -1,4 +1,4 @@
-package io.github.lprakashv.matcher.models;
+package io.github.lprakashv.patternmatcher4j.matcher.models;
 
 import java.util.Objects;
 
