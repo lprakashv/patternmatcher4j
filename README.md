@@ -6,13 +6,13 @@ An FP style pattern matcher library for Java
 ```java
 // Assume some Person objects as : Person(name, age, eligible, Object extra)
 
-String evaluatedActionAfterProperMatch = 
+String stringFromObjectPatternMatching = 
     Matcher.<Object, String>match((Object) person)
         .matchCase( // any number of field matches
-            // this is a preficate match with Function<Object, Boolean> passed
+            // this is a field with predicate match with Function<Object, Boolean> passed
             Field.with("name", name -> ((String) name).toLowerCase().equals("lalit")),
             Field.with("age", age -> (Integer) age < 60),
-            // this is value match with .withValue method
+            // this is field with value match with .withValue method
             Field.withValue("eligible", true)
         )
         // every matchCase has to be followed by an action. matchCase() returns an instance of CaseActionAppender
@@ -20,15 +20,15 @@ String evaluatedActionAfterProperMatch =
         // .action of CaseActionAppender will return a new Matcher with appended action
         .matchCase(Field.withValue("age", null))
         .action(p -> "God found")
-        // this is a value matcher
+        // this is a value match
         .matchValue(new Person("Nitin", 26, false))
         .action(p -> "Uneligible Nitin with age=26 found")
-        // this is field a type matcher
+        // this is field with type match
         .matchCase(
             Field.with("extra", String.class)
         )
         .action(p -> "Person with String extra found with extra value=" + ((Person) p).extra)
-        // this is type matcher
+        // this is type match
         .matchCase(NonPerson.class)
         .action(p -> "This is not a person")
         // we can use get() which will return Optional<R>
