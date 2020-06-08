@@ -1,5 +1,7 @@
+[![Build Status](https://travis-ci.com/lprakashv/patternmatcher4j.svg?branch=master)](https://travis-ci.com/lprakashv/patternmatcher4j)
+[![Coverage Status](https://coveralls.io/repos/github/lprakashv/patternmatcher4j/badge.svg?branch=master)](https://coveralls.io/github/lprakashv/patternmatcher4j?branch=master)
 
-# pattern-matcher
+# pattern-matcher "Switch-Case on Steriods"
 An FP style pattern matcher library for Java. Pattern matching is one of the the single most popular concept. This is inpired from [Scala's pattern matching](https://docs.scala-lang.org/tour/pattern-matching.html).
 
 ## Concept
