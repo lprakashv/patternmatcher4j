@@ -12,6 +12,7 @@ public class MatcherTest {
   Person nitin = new Person("Nitin", 26, false);
   Person god = new Person("God", null, true);
   Person extraPerson = new Person("Extra", -1, false, "Something extra");
+  Person veryOld = new Person("Gary", 101, true);
 
   private Matcher<Object, String> createPatternMatchForPerson(Object person) {
     return Matcher
@@ -38,7 +39,9 @@ public class MatcherTest {
         .action(p -> "Person with String extra found with extra value=" + ((Person) p).extra)
         // this is type match
         .matchCase(NonPerson.class)
-        .action(p -> "This is not a person");
+        .action(p -> "This is not a person")
+        .matchCase(p -> ((Person) p).age > 100)
+        .action(p -> "Very old person");
     // we can use get() which will return Optional<R>
   }
 
@@ -80,6 +83,14 @@ public class MatcherTest {
         .getOrElse("Unknown");
 
     Assert.assertEquals("Person with String extra found with extra value=Something extra", result);
+  }
+
+  @Test
+  public void testMatchPredicate() {
+    String result = createPatternMatchForPerson(veryOld)
+        .getOrElse("Unknown");
+
+    Assert.assertEquals("Very old person", result);
   }
 
   @Test

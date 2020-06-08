@@ -32,6 +32,9 @@ String stringFromObjectPatternMatching =
         // this is type match
         .matchCase(NonPerson.class)
         .action(p -> "This is not a person")
+        // this is a predicate match
+        .matchCase(p -> ((Person) p).age > 100)
+        .action(p -> "Very old person")
         // we can use get() which will return Optional<R>
         .getOrElse("Unknown");
 ```
