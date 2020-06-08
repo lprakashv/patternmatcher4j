@@ -7,7 +7,7 @@ An FP style pattern matcher library for Java
 // Assume some Person objects as : Person(name, age, eligible, Object extra)
 
 String evaluatedActionAfterProperMatch = 
-    Matcher.<Person, String>match((Object) person)
+    Matcher.<Object, String>match((Object) person)
         .matchCase( // any number of field matches
             // this is a preficate match with Function<Object, Boolean> passed
             Field.with("name", name -> ((String) name).toLowerCase().equals("lalit")),
@@ -27,7 +27,7 @@ String evaluatedActionAfterProperMatch =
         .matchCase(
             Field.with("extra", String.class)
         )
-        .action(p -> "Person with String extra found with extra value=" + p.extra)
+        .action(p -> "Person with String extra found with extra value=" + ((Person) p).extra)
         // this is type matcher
         .matchCase(NonPerson.class)
         .action(p -> "This is not a person")
