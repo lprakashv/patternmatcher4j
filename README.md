@@ -1,2 +1,2 @@
-# java-pattern-matcher
-An FP style pattern matcher library for Java
+# java-match-matcher
+An FP style match matcher library for Java

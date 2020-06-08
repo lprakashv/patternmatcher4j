@@ -1,65 +1,85 @@
 package io.github.lprakashv.matcher;
 
-import io.github.lprakashv.pattern.Pattern;
+import io.github.lprakashv.match.DestructuredMatch;
+import io.github.lprakashv.match.Match;
+import io.github.lprakashv.match.PredicateMatch;
+import io.github.lprakashv.match.TypeMatch;
+import io.github.lprakashv.match.ValueMatch;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class Matcher<T, R> {
 
-  private final T baseObject;
-  private List<PatternAction<T, R>> patternActions = new ArrayList<>();
+  private final T matchedObject;
+  private final List<CaseAction<T, R>> caseActions;
 
-  public Matcher(T baseObject) {
-    this.baseObject = baseObject;
+  private Matcher(T matchedObject) {
+    this.matchedObject = matchedObject;
+    this.caseActions = new ArrayList<>();
   }
 
-  public static <T1, R1> Matcher<T1, R1> matches(T1 baseObject) {
-    return new Matcher<>(baseObject);
+  private Matcher(T matchedObject, List<CaseAction<T, R>> caseActions) {
+    this.matchedObject = matchedObject;
+    this.caseActions = caseActions;
   }
 
-  public MatchActionAppender<T, R> caseMatch(Pattern pattern) {
-    MatchActionAppender<T, R> matchActionAppender = new MatchActionAppender<>(this);
-    this.patternActions.add(new PatternAction<>(pattern, matchActionAppender));
-    return matchActionAppender;
+  public static <T1, R1> Matcher<T1, R1> match(T1 matchedObject) {
+    return new Matcher<>(matchedObject);
   }
 
-  public R evaluate(R defaultValue) {
-    for (PatternAction<T, R> patternAction : this.patternActions) {
-      if (patternAction.pattern.matches(this.baseObject)) {
-        return patternAction.actionAppender.action.apply(this.baseObject);
+  class CaseActionAppender {
+
+    private Match match;
+
+    private CaseActionAppender(Match match) {
+      this.match = match;
+    }
+
+    public Matcher<T, R> action(Function<T, R> fn) {
+      caseActions.add(new CaseAction<>(match, fn));
+      return new Matcher<>(matchedObject, caseActions);
+    }
+  }
+
+  public CaseActionAppender matchCase(Class<?> type) {
+    return new CaseActionAppender(TypeMatch.of(type));
+  }
+
+  public CaseActionAppender matchCase(DestructuredMatch.Field... fields) {
+    return new CaseActionAppender(DestructuredMatch.of(fields));
+  }
+
+  public CaseActionAppender matchCase(Function<Object, Boolean> predicate) {
+    return new CaseActionAppender(PredicateMatch.of(predicate));
+  }
+
+  public CaseActionAppender matchValue(Object value) {
+    return new CaseActionAppender(ValueMatch.of(value));
+  }
+
+  public Optional<R> get() {
+    for (CaseAction<T, R> caseAction : this.caseActions) {
+      if (caseAction.matchCase.matches(this.matchedObject)) {
+        return Optional.of(caseAction.action.apply(this.matchedObject));
       }
     }
-    return defaultValue;
+    return Optional.empty();
   }
 
-  public R evaluate() {
-    return evaluate(null);
+  public R getOrElse(R defaultValue) {
+    return get().orElse(defaultValue);
   }
 
-  static class MatchActionAppender<T1, R1> {
+  private static class CaseAction<T1, R1> {
 
-    private Matcher<T1, R1> matcher;
-    private Function<T1, R1> action;
+    final Match matchCase;
+    final Function<T1, R1> action;
 
-    MatchActionAppender(Matcher<T1, R1> matcher) {
-      this.matcher = matcher;
-    }
-
-    Matcher<T1, R1> then(Function<T1, R1> action) {
+    CaseAction(Match matchCase, Function<T1, R1> action) {
+      this.matchCase = matchCase;
       this.action = action;
-      return this.matcher;
-    }
-  }
-
-  private static class PatternAction<T1, R1> {
-
-    Pattern pattern;
-    MatchActionAppender<T1, R1> actionAppender;
-
-    public PatternAction(Pattern pattern, MatchActionAppender<T1, R1> actionAppender) {
-      this.pattern = pattern;
-      this.actionAppender = actionAppender;
     }
   }
 }
