@@ -130,7 +130,6 @@ matcher.getOrElse(OutputType defaultValue);
 Notable features it's lacking in comparison with true pattern matching (e.g. Scala's or any other functional language OOTB pattern matching):
 * Inability to destructure lists (lists should be persistent data structures to keep performance in mind).
 * Inability to provide compile time type checking.
-* 
 
 #### TODOS
 - [ ] Add custom exceptions.
