@@ -40,8 +40,8 @@ publishing {
                 }
                 scm {
                     url = 'https://github.com/lprakashv/patternmatcher4j'
-                    connection = 'scm:git:git://github.com/lprakashv/patternmatcher4j.git'
-                    developerConnection = 'scm:git:git@github.com:lprakashv/patternmatcher4j.git'
+                    connection = 'scm:git:https://www.github.com/lprakashv/patternmatcher4j.git'
+                    developerConnection = 'scm:git:ssh://git@github.com:lprakashv/patternmatcher4j.git'
                 }
             }
         }
