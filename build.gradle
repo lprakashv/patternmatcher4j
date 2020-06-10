@@ -7,7 +7,7 @@ plugins {
 }
 
 group 'io.github.lprakashv'
-version '0.1.1'
+version '0.1.2'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -21,14 +21,6 @@ publishing {
         mavenJava(MavenPublication) {
             artifactId = 'patternmatcher4j'
             from components.java
-            versionMapping {
-                usage('java-api') {
-                    fromResolutionOf('runtimeClasspath')
-                }
-                usage('java-runtime') {
-                    fromResolutionResult()
-                }
-            }
             pom {
                 name = 'patternmatcher4j'
                 description = 'A Functional programming style pattern matcher library for Java'
