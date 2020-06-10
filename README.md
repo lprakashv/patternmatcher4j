@@ -4,7 +4,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.lprakashv/patternmatcher4j?style=flat-square)](https://search.maven.org/search?q=g:%22io.github.lprakashv%22%20AND%20a:%22patternmatcher4j%22)
 
 # patternmatcher4j "Switch-Case on Steriods"
-An FP style pattern matcher library for Java. Pattern matching is one of the the single most popular concept. This is inpired from [Scala's pattern matching](https://docs.scala-lang.org/tour/pattern-matching.html).
+An FP style pattern matcher library for Java. Pattern matching is one of the the single most popular concept in functional programming. This is inpired from [Scala's pattern matching](https://docs.scala-lang.org/tour/pattern-matching.html).
 
 ### Dependency (replace `{version}` with the latest version)
 
@@ -120,13 +120,21 @@ Matcher<InputType, OutputType> matcher; // some matcher
 // returns Optional<OutputType> with value presend on any match.
 matcher.get();
 
-// returns strictly value of type OutputType with defaultValue not matching any case.
+// returns strictly value of type OutputType with defaultValue when input object does not match any case.
 matcher.getOrElse(OutputType defaultValue); 
 ```
 
 ##### NOTES
 * The matcher computation is lazy and will not start until `.get()` or `.getOrElse()` invoked on it.
 
+Notable features it's lacking in comparison with true pattern matching (e.g. Scala's or any other functional language OOTB pattern matching):
+* Inability to destructure lists (lists should be persistent data structures to keep performance in mind).
+* Inability to provide compile time type checking.
+* 
+
 #### TODOS
 - [ ] Add custom exceptions.
-- [ ] Add exception propagation with computation yielding result or exception.
+- [ ] Result caching for a matcher.
+- [ ] Standalone generic matcher construction (without having to write a `Function<T, Matcher<T, R>>`).
+- [ ] More type safety around predicate-matcher and type-matcher.
+
