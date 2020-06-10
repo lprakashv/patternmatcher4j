@@ -34,7 +34,7 @@ Here, we create a *"Matcher"* for an object (a Java POJO), for which we define *
 1. *Predicate* - a function which takes an object (of the same type of matched object) as input and returns boolean to check if the object matches or not.
 2. *Value* - exact value match using Java's equals() method.
 3. *Type* - to match specific type of the matched object.
-4. *Destrucured* - This is a more advanced match, here we can match each field of the matched object and can define criteria on each field to qualify as a match.
+4. *Destructured* - This is a more advanced match, here we can match each field of the matched object and can define criteria on each field to qualify as a match.
 
 For each *"match-case"*, we define an action to perform on original matched object.
 
