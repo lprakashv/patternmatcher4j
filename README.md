@@ -1,5 +1,5 @@
 [![GitHub](https://img.shields.io/github/license/lprakashv/patternmatcher4j?style=flat-square)](LICENSE)
-[![Travis (.com) branch](https://img.shields.io/travis/com/lprakashv/patternmatcher4j/master?style=flat-square)]((https://travis-ci.com/lprakashv/patternmatcher4j))
+[![Travis (.com) branch](https://img.shields.io/travis/com/lprakashv/patternmatcher4j/master?style=flat-square)](https://travis-ci.com/lprakashv/patternmatcher4j)
 [![Coveralls github branch](https://img.shields.io/coveralls/github/lprakashv/patternmatcher4j/master?style=flat-square)](https://coveralls.io/github/lprakashv/patternmatcher4j?branch=master)
 ![Maven Central](https://img.shields.io/maven-central/v/io.github.lprakashv/patternmatcher4j?style=flat-square)
 
