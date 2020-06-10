@@ -1,10 +1,31 @@
 [![GitHub](https://img.shields.io/github/license/lprakashv/patternmatcher4j?style=flat-square)](LICENSE)
 [![Travis (.com) branch](https://img.shields.io/travis/com/lprakashv/patternmatcher4j/master?style=flat-square)](https://travis-ci.com/lprakashv/patternmatcher4j)
 [![Coveralls github branch](https://img.shields.io/coveralls/github/lprakashv/patternmatcher4j/master?style=flat-square)](https://coveralls.io/github/lprakashv/patternmatcher4j?branch=master)
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.lprakashv/patternmatcher4j?style=flat-square)](https://search.maven.org/artifact/io.github.lprakashv/patternmatcher4j)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.lprakashv/patternmatcher4j?style=flat-square)](https://search.maven.org/search?q=g:%22io.github.lprakashv%22%20AND%20a:%22patternmatcher4j%22)
 
 # patternmatcher4j "Switch-Case on Steriods"
 An FP style pattern matcher library for Java. Pattern matching is one of the the single most popular concept. This is inpired from [Scala's pattern matching](https://docs.scala-lang.org/tour/pattern-matching.html).
+
+### Dependency (replace `{version}` with the latest version)
+
+Maven
+```xml
+<dependency>
+  <groupId>io.github.lprakashv</groupId>
+  <artifactId>patternmatcher4j</artifactId>
+  <version>{version}</version>
+</dependency>
+```
+
+Gradle
+```groovy
+implementation 'io.github.lprakashv:patternmatcher4j:{version}'
+```
+
+Leiningen
+```clojure
+[io.github.lprakashv/patternmatcher4j "{version}"]
+```
 
 ## Concept
 This is just like switch-case block, but you can do much more than just matching primitive values and enums. 
