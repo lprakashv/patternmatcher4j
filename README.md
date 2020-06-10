@@ -3,7 +3,7 @@
 [![Coveralls github branch](https://img.shields.io/coveralls/github/lprakashv/patternmatcher4j/master?style=flat-square)](https://coveralls.io/github/lprakashv/patternmatcher4j?branch=master)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.lprakashv/patternmatcher4j?style=flat-square)](https://search.maven.org/search?q=g:%22io.github.lprakashv%22%20AND%20a:%22patternmatcher4j%22)
 
-# patternmatcher4j "Switch-Case on Steriods"
+# patternmatcher4j "Switch-Case on Steroids"
 An FP style pattern matcher library for Java. Pattern matching is one of the the single most popular concept in functional programming. This is inpired from [Scala's pattern matching](https://docs.scala-lang.org/tour/pattern-matching.html).
 
 ### Dependency (replace `{version}` with the latest version)
