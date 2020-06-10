@@ -31,14 +31,14 @@ Leiningen
 This is just like switch-case block, but you can do much more than just matching primitive values and enums. 
 
 Here, we create a *"Matcher"* for an object (a Java POJO), for which we define *"match-cases"* which can be of following type:
-1. *Predicate* - a function which takes an object (of the same type of matched object) as input and returns boolean to check if the object matches or not.
-2. *Value* - exact value match using Java's equals() method.
-3. *Type* - to match specific type of the matched object.
-4. *Destructured* - This is a more advanced match, here we can match each field of the matched object and can define criteria on each field to qualify as a match.
+1. **Predicate** - a function which takes an object (of the same type of matched object) as input and returns boolean to check if the object matches or not.
+2. **Value** - exact value match using Java's equals() method.
+3. **Type** - to match specific type of the matched object.
+4. **Destructured** - This is a more advanced match, here we can match each field with a match of their own (recursive nested matching possible!) of the matched object and can define criteria on each field to qualify as a match.
 
-For each *"match-case"*, we define an action to perform on original matched object.
+For each **"match-case"**, we define an **"action"** to perform on original matched object.
 
-All the *match-case* and their corresponding *action* are stored in the matcher's state. There will be no computation (matching and evaluation) until we trigger matcher's *"get"*.
+All the **match-case** and their corresponding **action** are stored in the matcher's state. There will be no computation (matching and evaluation) until we trigger matcher's **"get"** (Lazy computation).
 
 ### Example
 ```java
