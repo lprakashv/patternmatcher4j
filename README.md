@@ -75,7 +75,7 @@ Matcher.<InputType, OutputType>matchFor(InputType matchedObject);
 
 ### Adding match cases on a matcher
 * `.matchCase(Field... fieldMatches)` 
-    * Destrucutred object match (or object fields match).
+    * Destructured object match (or object fields match).
     * Multiple Field arguments can be given representing each field's matching.
     * Recursive/nested match on field using:
         * `Field.with("fieldName", Class<?>|Function<Object, Boolean>|Field...)`.
