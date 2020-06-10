@@ -35,6 +35,11 @@ publishing {
                 name = 'patternmatcher4j'
                 description = 'A Functional programming style pattern matcher library for Java'
                 url = 'http://lprakashv.github.io/patternmatcher4j/'
+                scm {
+                    url 'https://github.com/lprakashv/patternmatcher4j'
+                    connection 'scm:git:git://github.com/lprakashv/patternmatcher4j.git'
+                    developerConnection 'scm:git:git@github.com:lprakashv/patternmatcher4j.git'
+                }
                 licenses {
                     license {
                         name = 'The Apache License, Version 2.0'
