@@ -58,8 +58,8 @@ publishing {
             url version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             if (hasCredentials) {
                 credentials {
-                    username project.ossrhUser
-                    password project.ossrhPassword
+                    username ossrhUser
+                    password ossrhPassword
                 }
             }
         }
