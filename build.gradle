@@ -16,6 +16,8 @@ java {
     withSourcesJar()
 }
 
+def hasCredentials = hasProperty('ossrhUser') && hasProperty('ossrhPassword')
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -54,10 +56,10 @@ publishing {
             def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
             def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
             url version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-            if (ossrhUser != null && ossrhPassword != null) {
+            if (hasCredentials) {
                 credentials {
-                    username ossrhUser
-                    password ossrhPassword
+                    username project.ossrhUser
+                    password project.ossrhPassword
                 }
             }
         }
