@@ -6,7 +6,7 @@ import java.util.List;
 public class MatcherAggregatedResult<R> {
   private final List<MatcherBreakResult<R>> results;
 
-  public MatcherAggregatedResult(
+  MatcherAggregatedResult(
       List<MatcherBreakResult<R>> results) {
     this.results = results;
   }
