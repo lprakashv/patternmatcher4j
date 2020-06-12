@@ -6,8 +6,6 @@
 # patternmatcher4j "Switch-Case on Steroids"
 An FP style pattern matcher library for Java. Pattern matching is one of the the single most popular concept in functional programming. This is inpired from [Scala's pattern matching](https://docs.scala-lang.org/tour/pattern-matching.html).
 
-**[See Javadoc](https://lprakashv.github.io/patternmatcher4j/)**
-
 ### Dependency (replace `{version}` with the latest version)
 
 Maven
@@ -23,6 +21,8 @@ Gradle
 ```groovy
 implementation 'io.github.lprakashv:patternmatcher4j:{version}'
 ```
+
+**[See Javadoc](https://lprakashv.github.io/patternmatcher4j/)**
 
 ## Concept
 This is just like switch-case block, but you can do much more than just matching primitive values and enums. 
@@ -52,8 +52,8 @@ String stringFromObjectPatternMatching =
     Matcher
         .<Object, String>matchFor((Object) person)
         .matchCase(
-            Field.with("name", name -> ((String) name).toLowerCase().equals("lalit")),
-            Field.with("age", age -> (Integer) age < 60),
+            Field.with("name", name -> name != null && ((String) name).toLowerCase().equals("lalit")),
+            Field.with("age", age -> age != null && (Integer) age < 60),
             Field.withValue("eligible", true)
         )
         .action(p -> "Young Lalit found")
@@ -67,7 +67,7 @@ String stringFromObjectPatternMatching =
         .action(p -> "Person with String extra found with extra value=" + ((Person) p).extra)
         .matchCase(NonPerson.class)
         .action(p -> "This is not a person")
-        .matchCase(p -> ((Person) p).age > 100)
+        .matchCase(p -> p != null && ((Person) p).age > 100)
         .action(p -> "Very old person")
         .getOrElse("Unknown");
 ```

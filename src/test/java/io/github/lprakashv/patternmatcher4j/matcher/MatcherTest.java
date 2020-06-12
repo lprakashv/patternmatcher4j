@@ -20,7 +20,7 @@ public class MatcherTest {
         .<Object, String>matchFor((Object) person)
         .matchCase( // any number of field matches
             // this is a field with predicate match with Function<Object, Boolean> passed
-            Field.with("name", name -> ((String) name).toLowerCase().equals("lalit")),
+            Field.with("name", name -> name != null && ((String) name).toLowerCase().equals("lalit")),
             Field.with("age", age -> age != null && (Integer) age < 60),
             // this is field with value match with .withValue method
             Field.withValue("eligible", true)
@@ -41,7 +41,7 @@ public class MatcherTest {
         // this is type match
         .matchCase(NonPerson.class)
         .action(p -> "This is not a person")
-        .matchCase(p -> ((Person) p).age > 100)
+        .matchCase(p -> p != null && ((Person) p).age > 100)
         .action(p -> "Very old person");
     // we can use get() which will return Optional<R>
   }
