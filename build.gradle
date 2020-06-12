@@ -69,6 +69,17 @@ javadoc {
     }
 }
 
+task withCopyJavadocToDocs(type: Copy) {
+    from('build/docs/javadoc') {
+        include '**/*.html'
+        include '**/*.css'
+        include '**/*.js'
+    }
+    into 'docs/'
+}
+
+build.finalizedBy(withCopyJavadocToDocs)
+
 jacocoTestReport {
     reports {
         xml.enabled = true
