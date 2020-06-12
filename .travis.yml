@@ -5,8 +5,26 @@ os: linux
 dist: trusty
 jdk: openjdk8
 
-script:
-  - ./gradlew build test
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
 
-after_success:
-  - ./gradlew test jacocoTestReport coveralls
+stages:
+  - name: build
+  - name: coverage
+    if: branch = master
+  - name: publish
+    if: branch = master
+
+jobs:
+  include:
+    - stage: build
+      script: ./gradlew build test
+    - stage: coverage
+      script: ./gradlew test jacocoTestReport coveralls
+    - stage: publish
+      script: ./gradlew publish
