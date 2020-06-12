@@ -2,7 +2,7 @@
 .gradle/
 target/
 
-build/
+build/*
 !build/docs/
 
 # Compiled class file
