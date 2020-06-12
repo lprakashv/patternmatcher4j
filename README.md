@@ -6,6 +6,8 @@
 # patternmatcher4j "Switch-Case on Steroids"
 An FP style pattern matcher library for Java. Pattern matching is one of the the single most popular concept in functional programming. This is inpired from [Scala's pattern matching](https://docs.scala-lang.org/tour/pattern-matching.html).
 
+[See Javadoc](docs/javadoc/index.html)
+
 ### Dependency (replace `{version}` with the latest version)
 
 Maven
