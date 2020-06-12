@@ -27,4 +27,4 @@ jobs:
     - stage: coverage
       script: ./gradlew test jacocoTestReport coveralls
     - stage: publish
-      script: ./gradlew publish
+      script: ./gradlew publish -PossrhUser="${ossrhUser}" -PossrhPassword="${ossrhPassword}" -Psigning.keyId="${signing.keyId}" -Psigning.password="${signing.password}" -Psigning.secretKeyRingFile="${signing.secretKeyRingFile}"
