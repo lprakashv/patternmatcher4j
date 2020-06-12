@@ -1,5 +1,6 @@
 package io.github.lprakashv.patternmatcher4j.matcher;
 
+import io.github.lprakashv.patternmatcher4j.exceptions.MatcherException;
 import io.github.lprakashv.patternmatcher4j.match.DestructuredMatch.Field;
 import io.github.lprakashv.patternmatcher4j.matcher.models.NonPerson;
 import io.github.lprakashv.patternmatcher4j.matcher.models.Person;
@@ -20,7 +21,7 @@ public class MatcherTest {
         .matchCase( // any number of field matches
             // this is a field with predicate match with Function<Object, Boolean> passed
             Field.with("name", name -> ((String) name).toLowerCase().equals("lalit")),
-            Field.with("age", age -> (Integer) age < 60),
+            Field.with("age", age -> age != null && (Integer) age < 60),
             // this is field with value match with .withValue method
             Field.withValue("eligible", true)
         )
@@ -46,7 +47,7 @@ public class MatcherTest {
   }
 
   @Test
-  public void testMatchFieldPredicate() {
+  public void testMatchFieldPredicate() throws MatcherException {
     String result = createPatternMatchForPerson(lalit)
         .getOrElse("Unknown");
 
@@ -54,7 +55,7 @@ public class MatcherTest {
   }
 
   @Test
-  public void testMatchFieldValue() {
+  public void testMatchFieldValue() throws MatcherException {
     String result = createPatternMatchForPerson(god)
         .getOrElse("Unknown");
 
@@ -62,7 +63,7 @@ public class MatcherTest {
   }
 
   @Test
-  public void testMatchType() {
+  public void testMatchType() throws MatcherException {
     String result = createPatternMatchForPerson(new NonPerson())
         .getOrElse("Unknown");
 
@@ -70,7 +71,7 @@ public class MatcherTest {
   }
 
   @Test
-  public void testMatchValue() {
+  public void testMatchValue() throws MatcherException {
     String result = createPatternMatchForPerson(nitin)
         .getOrElse("Unknown");
 
@@ -78,7 +79,7 @@ public class MatcherTest {
   }
 
   @Test
-  public void testMatchFieldType() {
+  public void testMatchFieldType() throws MatcherException {
     String result = createPatternMatchForPerson(extraPerson)
         .getOrElse("Unknown");
 
@@ -86,7 +87,7 @@ public class MatcherTest {
   }
 
   @Test
-  public void testMatchPredicate() {
+  public void testMatchPredicate() throws MatcherException {
     String result = createPatternMatchForPerson(veryOld)
         .getOrElse("Unknown");
 
@@ -94,7 +95,7 @@ public class MatcherTest {
   }
 
   @Test
-  public void testMatchDefault() {
+  public void testMatchDefault() throws MatcherException {
     String result = createPatternMatchForPerson(new Person("", 0, true))
         .getOrElse("Unknown");
 

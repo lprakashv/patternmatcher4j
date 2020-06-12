@@ -1,8 +1,9 @@
 package io.github.lprakashv.patternmatcher4j.match;
 
 import io.github.lprakashv.patternmatcher4j.constants.MatchType;
+import java.util.Objects;
 
-public class ValueMatch extends Match {
+public class ValueMatch implements Match {
 
   private final Object value;
 
@@ -14,13 +15,17 @@ public class ValueMatch extends Match {
     return new ValueMatch(value);
   }
 
+  protected Object getValue() {
+    return this.value;
+  }
+
   @Override
-  protected MatchType getMatchType() {
+  public MatchType getMatchType() {
     return MatchType.VALUE;
   }
 
   @Override
-  protected Object getMatch() {
-    return this.value;
+  public boolean matches(int index, Object object) {
+    return Objects.equals(this.getValue(), object);
   }
 }

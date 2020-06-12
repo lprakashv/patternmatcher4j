@@ -1,5 +1,8 @@
 package io.github.lprakashv.patternmatcher4j.matcher;
 
+import io.github.lprakashv.patternmatcher4j.exceptions.ActionEvaluationException;
+import io.github.lprakashv.patternmatcher4j.exceptions.MatchException;
+import io.github.lprakashv.patternmatcher4j.exceptions.MatcherException;
 import io.github.lprakashv.patternmatcher4j.match.DestructuredMatch;
 import io.github.lprakashv.patternmatcher4j.match.Match;
 import io.github.lprakashv.patternmatcher4j.match.PredicateMatch;
@@ -15,33 +18,11 @@ public class Matcher<T, R> {
   private final T matchedObject;
   private final List<CaseAction<T, R>> caseActions;
 
-  private Matcher(T matchedObject) {
-    this.matchedObject = matchedObject;
-    this.caseActions = new ArrayList<>();
-  }
-
-  private Matcher(T matchedObject, List<CaseAction<T, R>> caseActions) {
-    this.matchedObject = matchedObject;
-    this.caseActions = caseActions;
-  }
-
   public static <T1, R1> Matcher<T1, R1> matchFor(T1 matchedObject) {
     return new Matcher<>(matchedObject);
   }
 
-  class CaseActionAppender {
-
-    private Match match;
-
-    private CaseActionAppender(Match match) {
-      this.match = match;
-    }
-
-    public Matcher<T, R> action(Function<T, R> fn) {
-      caseActions.add(new CaseAction<>(match, fn));
-      return new Matcher<>(matchedObject, caseActions);
-    }
-  }
+  // ---- match cases:
 
   public CaseActionAppender matchCase(Class<?> type) {
     return new CaseActionAppender(TypeMatch.of(type));
@@ -59,27 +40,134 @@ public class Matcher<T, R> {
     return new CaseActionAppender(ValueMatch.of(value));
   }
 
-  public Optional<R> get() {
+  // ---- safe match results:
+
+  public MatcherAggregatedResult<R> getAllMatches() {
+    List<MatcherBreakResult<R>> breakResults = new ArrayList<>();
+
+    int index = 0;
     for (CaseAction<T, R> caseAction : this.caseActions) {
-      if (caseAction.matchCase.matches(this.matchedObject)) {
-        return Optional.of(caseAction.action.apply(this.matchedObject));
+      try {
+        if (caseAction.matchCase.matches(index, this.matchedObject)) {
+          onMatchAdd(breakResults, index, caseAction.matchCase, caseAction.action);
+        }
+      } catch (MatchException e) {
+        breakResults.add(new MatcherBreakResult<>(
+            index,
+            caseAction.matchCase.getMatchType(),
+            null,
+            e
+        ));
       }
+      index++;
+    }
+
+    return new MatcherAggregatedResult<>(breakResults);
+  }
+
+  public Optional<MatcherBreakResult<R>> getFirstMatch() {
+    int index = 0;
+    for (CaseAction<T, R> caseAction : this.caseActions) {
+      try {
+        if (caseAction.matchCase.matches(index, this.matchedObject)) {
+          return onMatchReturn(index, caseAction.matchCase, caseAction.action);
+        }
+      } catch (MatchException e) {
+        return Optional.of(new MatcherBreakResult<>(
+            index,
+            caseAction.matchCase.getMatchType(),
+            null,
+            e
+        ));
+      }
+      index++;
     }
     return Optional.empty();
   }
 
-  public R getOrElse(R defaultValue) {
+  // ---- unsafe match results (throws exceptions):
+
+  public Optional<R> get() throws MatcherException {
+    Optional<MatcherBreakResult<R>> matcherBreakResult = getFirstMatch();
+    if (matcherBreakResult.isPresent()) {
+      if (matcherBreakResult.get().getException() != null) {
+        throw matcherBreakResult.get().getException();
+      }
+      return Optional.of(matcherBreakResult.get().getValue());
+    }
+
+    return Optional.empty();
+  }
+
+  public R getOrElse(R defaultValue) throws MatcherException {
     return get().orElse(defaultValue);
   }
 
-  private static class CaseAction<T1, R1> {
+  // ---- private methods below:
 
-    final Match matchCase;
-    final Function<T1, R1> action;
+  private Matcher(T matchedObject) {
+    this.matchedObject = matchedObject;
+    this.caseActions = new ArrayList<>();
+  }
 
-    CaseAction(Match matchCase, Function<T1, R1> action) {
-      this.matchCase = matchCase;
-      this.action = action;
+  private Matcher(T matchedObject, List<CaseAction<T, R>> caseActions) {
+    this.matchedObject = matchedObject;
+    this.caseActions = caseActions;
+  }
+
+  private void onMatchAdd(List<MatcherBreakResult<R>> breakResults, int index, Match match,
+      Function<T, R> action) {
+    try {
+      breakResults.add(new MatcherBreakResult<>(
+          index,
+          match.getMatchType(),
+          action.apply(this.matchedObject),
+          null
+      ));
+    } catch (Exception e) {
+      breakResults.add(new MatcherBreakResult<>(
+          index,
+          match.getMatchType(),
+          null,
+          new ActionEvaluationException(index, matchedObject,
+              "Failed to evaluate action at index: " + index, e)
+      ));
+    }
+  }
+
+  private Optional<MatcherBreakResult<R>> onMatchReturn(int index, Match match,
+      Function<T, R> action) {
+    try {
+      return Optional.of(new MatcherBreakResult<>(
+          index,
+          match.getMatchType(),
+          action.apply(this.matchedObject),
+          null
+      ));
+    } catch (Exception e) {
+      return Optional.of(new MatcherBreakResult<>(
+          index,
+          match.getMatchType(),
+          null,
+          new ActionEvaluationException(index, matchedObject,
+              "Failed to evaluate action at index: " + index, e)
+      ));
+    }
+  }
+
+  // ---- internal classes below:
+
+  class CaseActionAppender {
+
+    private Match match;
+
+    private CaseActionAppender(Match match) {
+      this.match = match;
+    }
+
+    public Matcher<T, R> action(Function<T, R> fn) {
+      caseActions.add(new CaseAction<>(match, fn));
+      return new Matcher<>(matchedObject, caseActions);
     }
   }
 }

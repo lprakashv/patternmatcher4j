@@ -1,7 +1,9 @@
 .idea/
 .gradle/
-build/
 target/
+
+build/
+!build/docs/
 
 # Compiled class file
 *.class

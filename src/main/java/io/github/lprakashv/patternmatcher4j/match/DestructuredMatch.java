@@ -1,11 +1,18 @@
 package io.github.lprakashv.patternmatcher4j.match;
 
 import io.github.lprakashv.patternmatcher4j.constants.MatchType;
+import io.github.lprakashv.patternmatcher4j.exceptions.DestructuredFieldExceptions;
+import io.github.lprakashv.patternmatcher4j.exceptions.FieldException;
+import io.github.lprakashv.patternmatcher4j.exceptions.MatchException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
-public class DestructuredMatch extends Match {
+public class DestructuredMatch implements Match {
 
   private final Map<String, Field> fieldMatches = new HashMap<>();
 
@@ -20,13 +27,45 @@ public class DestructuredMatch extends Match {
   }
 
   @Override
-  protected MatchType getMatchType() {
+  public MatchType getMatchType() {
     return MatchType.DESTRUCTURED;
   }
 
   @Override
-  protected Map<String, Field> getMatch() {
-    return this.fieldMatches;
+  public boolean matches(int index, Object object) throws MatchException {
+    if (object == null) {
+      return false;
+    }
+
+    java.lang.reflect.Field[] declaredFields = object.getClass().getDeclaredFields();
+    Map<String, java.lang.reflect.Field> allFieldsMap =
+        Arrays.stream(declaredFields)
+            .collect(Collectors.toMap(java.lang.reflect.Field::getName, df -> df));
+    if (fieldMatches.keySet().stream()
+        .anyMatch(k -> !allFieldsMap.containsKey(k))) {
+      return false;
+    }
+
+    List<FieldException> matchExceptions = new ArrayList<>();
+    boolean matched = true;
+
+    for (java.lang.reflect.Field field : declaredFields) {
+      field.setAccessible(true);
+      if (fieldMatches.containsKey(field.getName())) {
+        try {
+          matched &= fieldMatches.get(field.getName()).getMatch().matches(field.get(object));
+        } catch (IllegalAccessException | MatchException e) {
+          matchExceptions
+              .add(new FieldException(field.getName(), object, fieldMatches.get(field.getName()).getMatch(), e));
+        }
+      }
+    }
+
+    if (matchExceptions.isEmpty()) {
+      return matched;
+    } else {
+      throw new DestructuredFieldExceptions(index, object, this, matchExceptions);
+    }
   }
 
   public static class Field {

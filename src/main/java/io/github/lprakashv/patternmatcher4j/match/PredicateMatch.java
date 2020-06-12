@@ -1,9 +1,11 @@
 package io.github.lprakashv.patternmatcher4j.match;
 
 import io.github.lprakashv.patternmatcher4j.constants.MatchType;
+import io.github.lprakashv.patternmatcher4j.exceptions.MatchException;
+import java.util.Optional;
 import java.util.function.Function;
 
-public class PredicateMatch extends Match {
+public class PredicateMatch implements Match {
 
   private final Function<Object, Boolean> predicate;
 
@@ -15,13 +17,24 @@ public class PredicateMatch extends Match {
     return new PredicateMatch(predicate);
   }
 
+  protected Function<Object, Boolean> getPredicate() {
+    return predicate;
+  }
+
   @Override
-  protected MatchType getMatchType() {
+  public MatchType getMatchType() {
     return MatchType.PREDICATE;
   }
 
   @Override
-  protected Function<Object, Boolean> getMatch() {
-    return predicate;
+  public boolean matches(int index, Object object) throws MatchException {
+    try {
+      return this.getPredicate()
+          .andThen(Optional::ofNullable)
+          .apply(object)
+          .orElse(false);
+    } catch (Exception e) {
+      throw new MatchException(index, object, this, e);
+    }
   }
 }

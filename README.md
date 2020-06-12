@@ -17,7 +17,14 @@ Here, we create a *"Matcher"* for an object (a Java POJO), for which we define *
 
 For each *"match-case"*, we define an action to perform on original matched object.
 
-All the *match-case* and their corresponding *action* are stored in the matcher's state. There will be no computation (matching and evaluation) until we trigger matcher's *"get"*.
+All the *match-case* and their corresponding *action* are stored in the matcher's state. There will be no computation (matching and evaluation) until we evaluate the matcher. 
+Evaluation operations are: 
+* *Safe evaluations*:
+    * `.findFirstMatch()` - returns object of type `Option<MatcherBreakResult<R>>`, present in case if any first case matched or exception occurred.
+    * `.findAllMatches()` - returns object of type `MatcherAggregatedResult<R>`, all the matched cases' action results.
+* *Unsafe evaluations* (throws `MatcherException` on error):
+    * `.get()` - return `Option<R>`, present in case if any first case matched.
+    * `.getOrElse(R defaultValue)`, returns the matched action value or the default value if none of the case matches.
 
 ### Example
 ```java
@@ -96,16 +103,31 @@ matcher
 ```java
 Matcher<InputType, OutputType> matcher; // some matcher
 
-// returns Optional<OutputType> with value presend on any match.
+// returns Optional<MatcherBreakResult<OutputType>> with value present on either any first match or exception occurred.
+matcher.getFirstMatched();
+
+// returns value of type MatcherAggregatedResult<OutputType>.
+matcher.getAllMatched();
+
+// returns Optional<OutputType> with value present on any match.
 matcher.get();
 
 // returns strictly value of type OutputType with defaultValue not matching any case.
 matcher.getOrElse(OutputType defaultValue); 
 ```
 
+* *MatcherBreakResult<R>* holds the state/result of the case either matched or throws an exception, has methods:
+    * `int getIndex()` - returns the match-case's index in the matcher block (start from 0).
+    * `MatchType getMatchType()` - returns match-case's type.
+    * `R getValue()` - returns the value after applying action function, will be `null` on exception.
+    * `MatcherException getException()` - returns the matcher exception if encountered, will be `null` on successful match action.
+
+* *MatcherAggregatedResult<R>* holds the states/results of all the cases matched in the matcher, has methods:
+    * `List<MatcherBreakResult<R>> getResults()` - returns all the matched/failed match-cases' results.
+
 ##### NOTES
 * The matcher computation is lazy and will not start until `.get()` or `.getOrElse()` invoked on it.
 
 #### TODOS
-- [ ] Add custom exceptions.
-- [ ] Add exception propagation with computation yielding result or exception.
+- [x] Add custom exceptions.
+- [x] Add exception propagation with computation yielding result or exception.

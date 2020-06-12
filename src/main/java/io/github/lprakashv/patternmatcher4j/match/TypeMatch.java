@@ -2,7 +2,7 @@ package io.github.lprakashv.patternmatcher4j.match;
 
 import io.github.lprakashv.patternmatcher4j.constants.MatchType;
 
-public class TypeMatch extends Match {
+public class TypeMatch implements Match {
 
   private final Class<?> type;
 
@@ -14,13 +14,17 @@ public class TypeMatch extends Match {
     return new TypeMatch(type);
   }
 
-  @Override
-  protected MatchType getMatchType() {
-    return MatchType.CLASS;
+  protected Class<?> getTypeClass() {
+    return type;
   }
 
   @Override
-  protected Class<?> getMatch() {
-    return type;
+  public MatchType getMatchType() {
+    return MatchType.TYPE;
+  }
+
+  @Override
+  public boolean matches(int index, Object object) {
+    return object != null && this.getTypeClass() == object.getClass();
   }
 }
