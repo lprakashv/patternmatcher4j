@@ -1,28 +1,44 @@
 [![GitHub](https://img.shields.io/github/license/lprakashv/patternmatcher4j?style=flat-square)](LICENSE)
 [![Travis (.com) branch](https://img.shields.io/travis/com/lprakashv/patternmatcher4j/master?style=flat-square)](https://travis-ci.com/lprakashv/patternmatcher4j)
 [![Coveralls github branch](https://img.shields.io/coveralls/github/lprakashv/patternmatcher4j/master?style=flat-square)](https://coveralls.io/github/lprakashv/patternmatcher4j?branch=master)
-![Maven Central](https://img.shields.io/maven-central/v/io.github.lprakashv/patternmatcher4j?style=flat-square)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.lprakashv/patternmatcher4j?style=flat-square)](https://search.maven.org/search?q=g:%22io.github.lprakashv%22%20AND%20a:%22patternmatcher4j%22)
 
-# patternmatcher4j "Switch-Case on Steriods"
-An FP style pattern matcher library for Java. Pattern matching is one of the the single most popular concept. This is inpired from [Scala's pattern matching](https://docs.scala-lang.org/tour/pattern-matching.html).
+# patternmatcher4j "Switch-Case on Steroids"
+An FP style pattern matcher library for Java. Pattern matching is one of the the single most popular concept in functional programming. This is inpired from [Scala's pattern matching](https://docs.scala-lang.org/tour/pattern-matching.html).
+
+### Dependency (replace `{version}` with the latest version)
+
+Maven
+```xml
+<dependency>
+  <groupId>io.github.lprakashv</groupId>
+  <artifactId>patternmatcher4j</artifactId>
+  <version>{version}</version>
+</dependency>
+```
+
+Gradle
+```groovy
+implementation 'io.github.lprakashv:patternmatcher4j:{version}'
+```
 
 ## Concept
 This is just like switch-case block, but you can do much more than just matching primitive values and enums. 
 
 Here, we create a *"Matcher"* for an object (a Java POJO), for which we define *"match-cases"* which can be of following type:
-1. *Predicate* - a function which takes an object (of the same type of matched object) as input and returns boolean to check if the object matches or not.
-2. *Value* - exact value match using Java's equals() method.
-3. *Type* - to match specific type of the matched object.
-4. *Destrucured* - This is a more advanced match, here we can match each field of the matched object and can define criteria on each field to qualify as a match.
+1. **Predicate** - a function which takes an object (of the same type of matched object) as input and returns boolean to check if the object matches or not.
+2. **Value** - exact value match using Java's equals() method.
+3. **Type** - to match specific type of the matched object.
+4. **Destructured** - This is a more advanced match, here we can match each field with a match of their own (recursive nested matching possible!) of the matched object and can define criteria on each field to qualify as a match.
 
-For each *"match-case"*, we define an action to perform on original matched object.
+For each **"match-case"**, we define an **"action"** to perform on original matched object.
 
-All the *match-case* and their corresponding *action* are stored in the matcher's state. There will be no computation (matching and evaluation) until we evaluate the matcher. 
+All the **match-case** and their corresponding **action** are stored in the matcher's state. There will be no computation (matching and evaluation) until we evaluate the matcher. 
 Evaluation operations are: 
-* *Safe evaluations*:
+* **Safe evaluations**:
     * `.findFirstMatch()` - returns object of type `Option<MatcherBreakResult<R>>`, present in case if any first case matched or exception occurred.
     * `.findAllMatches()` - returns object of type `MatcherAggregatedResult<R>`, all the matched cases' action results.
-* *Unsafe evaluations* (throws `MatcherException` on error):
+* **Unsafe evaluations** (throws `MatcherException` on error):
     * `.get()` - return `Option<R>`, present in case if any first case matched.
     * `.getOrElse(R defaultValue)`, returns the matched action value or the default value if none of the case matches.
 
@@ -61,7 +77,7 @@ Matcher.<InputType, OutputType>matchFor(InputType matchedObject);
 
 ### Adding match cases on a matcher
 * `.matchCase(Field... fieldMatches)` 
-    * Destrucutred object match (or object fields match).
+    * Destructured object match (or object fields match).
     * Multiple Field arguments can be given representing each field's matching.
     * Recursive/nested match on field using:
         * `Field.with("fieldName", Class<?>|Function<Object, Boolean>|Field...)`.
@@ -112,7 +128,7 @@ matcher.getAllMatched();
 // returns Optional<OutputType> with value present on any match.
 matcher.get();
 
-// returns strictly value of type OutputType with defaultValue not matching any case.
+// returns strictly value of type OutputType with defaultValue when input object does not match any case.
 matcher.getOrElse(OutputType defaultValue); 
 ```
 
@@ -128,6 +144,12 @@ matcher.getOrElse(OutputType defaultValue);
 ##### NOTES
 * The matcher computation is lazy and will not start until `.get()` or `.getOrElse()` invoked on it.
 
+Notable features it's lacking in comparison with true pattern matching (e.g. Scala's or any other functional language OOTB pattern matching):
+* Inability to destructure lists (lists should be persistent data structures to keep performance in mind).
+* Inability to provide compile time type checking.
+
 #### TODOS
 - [x] Add custom exceptions.
-- [x] Add exception propagation with computation yielding result or exception.
+- [x] Result caching for a matcher.
+- [ ] Standalone generic matcher construction (without having to write a `Function<T, Matcher<T, R>>`).
+- [ ] More type safety around predicate-matcher and type-matcher.

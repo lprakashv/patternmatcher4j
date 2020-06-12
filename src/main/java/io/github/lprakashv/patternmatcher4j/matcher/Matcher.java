@@ -11,12 +11,17 @@ import io.github.lprakashv.patternmatcher4j.match.ValueMatch;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 public class Matcher<T, R> {
 
   private final T matchedObject;
   private final List<CaseAction<T, R>> caseActions;
+  private final AtomicReference<MatcherAggregatedResult<R>> aggregatedResultAtomicRef =
+      new AtomicReference<>(null);
+  private final AtomicReference<Optional<MatcherBreakResult<R>>> breakResultAtomicRef =
+      new AtomicReference<>(null);
 
   public static <T1, R1> Matcher<T1, R1> matchFor(T1 matchedObject) {
     return new Matcher<>(matchedObject);
@@ -43,6 +48,10 @@ public class Matcher<T, R> {
   // ---- safe match results:
 
   public MatcherAggregatedResult<R> getAllMatches() {
+    if (aggregatedResultAtomicRef.get() != null) {
+      return aggregatedResultAtomicRef.get();
+    }
+
     List<MatcherBreakResult<R>> breakResults = new ArrayList<>();
 
     int index = 0;
@@ -62,27 +71,43 @@ public class Matcher<T, R> {
       index++;
     }
 
-    return new MatcherAggregatedResult<>(breakResults);
+    MatcherAggregatedResult<R> matcherAggregatedResult = new MatcherAggregatedResult<>(
+        breakResults);
+    aggregatedResultAtomicRef.set(matcherAggregatedResult);
+    return matcherAggregatedResult;
   }
 
   public Optional<MatcherBreakResult<R>> getFirstMatch() {
+    if (breakResultAtomicRef.get() != null) {
+      return breakResultAtomicRef.get();
+    }
+
+    MatcherBreakResult<R> firstMatchResult = null;
+
     int index = 0;
     for (CaseAction<T, R> caseAction : this.caseActions) {
       try {
         if (caseAction.matchCase.matches(index, this.matchedObject)) {
-          return onMatchReturn(index, caseAction.matchCase, caseAction.action);
+          firstMatchResult = onMatchReturn(index, caseAction.matchCase, caseAction.action);
+          break;
         }
       } catch (MatchException e) {
-        return Optional.of(new MatcherBreakResult<>(
+        firstMatchResult = new MatcherBreakResult<>(
             index,
             caseAction.matchCase.getMatchType(),
             null,
             e
-        ));
+        );
+        break;
       }
       index++;
     }
-    return Optional.empty();
+    if (firstMatchResult == null) {
+      breakResultAtomicRef.set(Optional.empty());
+    } else {
+      breakResultAtomicRef.set(Optional.of(firstMatchResult));
+    }
+    return breakResultAtomicRef.get();
   }
 
   // ---- unsafe match results (throws exceptions):
@@ -135,23 +160,23 @@ public class Matcher<T, R> {
     }
   }
 
-  private Optional<MatcherBreakResult<R>> onMatchReturn(int index, Match match,
+  private MatcherBreakResult<R> onMatchReturn(int index, Match match,
       Function<T, R> action) {
     try {
-      return Optional.of(new MatcherBreakResult<>(
+      return new MatcherBreakResult<>(
           index,
           match.getMatchType(),
           action.apply(this.matchedObject),
           null
-      ));
+      );
     } catch (Exception e) {
-      return Optional.of(new MatcherBreakResult<>(
+      return new MatcherBreakResult<>(
           index,
           match.getMatchType(),
           null,
           new ActionEvaluationException(index, matchedObject,
               "Failed to evaluate action at index: " + index, e)
-      ));
+      );
     }
   }
 
