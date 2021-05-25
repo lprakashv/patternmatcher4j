@@ -1,9 +1,8 @@
-package io.github.lprakashv.patternmatcher4j.matcher;
+package testpackage;
 
 import io.github.lprakashv.patternmatcher4j.exceptions.PMatcherException;
 import io.github.lprakashv.patternmatcher4j.match.DestructuredMatch.MField;
-import io.github.lprakashv.patternmatcher4j.matcher.models.NonPerson;
-import io.github.lprakashv.patternmatcher4j.matcher.models.Person;
+import io.github.lprakashv.patternmatcher4j.matcher.PMatcher;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -38,7 +37,7 @@ public class PMatcherTest {
         // this is field with type match
         .matchCase(MField.with("extra", String.class))
         .thenTransform(
-            p -> "Person with String extra found with extra value=" + ((Person) p).getExtra())
+            p -> "testpackage.Person with String extra found with extra value=" + ((Person) p).getExtra())
         // this is type match
         .matchCase(NonPerson.class)
         .thenReturn("This is not a person")
@@ -79,7 +78,7 @@ public class PMatcherTest {
   public void testMatchFieldType() throws PMatcherException {
     String result = createPatternMatchForPerson(extraPerson).getOrElse("Unknown");
 
-    Assert.assertEquals("Person with String extra found with extra value=Something extra", result);
+    Assert.assertEquals("testpackage.Person with String extra found with extra value=Something extra", result);
   }
 
   @Test

@@ -1,4 +1,4 @@
-package io.github.lprakashv.patternmatcher4j.matcher.models;
+package testpackage;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

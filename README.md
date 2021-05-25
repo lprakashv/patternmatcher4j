@@ -59,7 +59,7 @@ computation (matching and evaluation) until we evaluate the matcher. Evaluation 
 ### Example
 
 ```java
-// Assume some Person objects as : Person(name, age, eligible, Object extra)
+// Assume some testpackage.Person objects as : testpackage.Person(name, age, eligible, Object extra)
 
 String stringFromObjectPatternMatching=
         new PMatcher<Object, String>(person)
@@ -72,13 +72,13 @@ String stringFromObjectPatternMatching=
         .thenReturn("Young Lalit found")
         .matchCase(MField.withValue("age",null))
         .thenReturn("God found")
-        .matchValue(new Person("Nitin",26,false))
-        .thenTransform(p->"Uneligible Nitin with age="+((Person)p).getAge()+" found")
+        .matchValue(new testpackage.Person("Nitin",26,false))
+        .thenTransform(p->"Uneligible Nitin with age="+((testpackage.Person)p).getAge()+" found")
         .matchCase(MField.with("extra",String.class))
-        .thenTransform(p->"Person with String extra found with extra value="+((Person)p).getExtra())
-        .matchCase(NonPerson.class)
+        .thenTransform(p->"testpackage.Person with String extra found with extra value="+((testpackage.Person)p).getExtra())
+        .matchCase(testpackage.NonPerson.class)
         .thenReturn("This is not a person")
-        .matchCase(p->p!=null&&((Person)p).getAge()>100)
+        .matchCase(p->p!=null&&((testpackage.Person)p).getAge()>100)
         .thenReturn("Very old person")
         .getOrElse("Unknown");
 ```

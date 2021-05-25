@@ -1,12 +1,16 @@
 .idea/
 .gradle/
 target/
+.settings/
+.vscode/
 
 build/
-!build/docs/javadoc/
 
 # Compiled class file
 *.class
 
 # Log file
 *.log
+
+.classpath
+.project

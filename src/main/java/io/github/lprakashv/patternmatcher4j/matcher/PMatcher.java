@@ -11,14 +11,13 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 public class PMatcher<T, R> {
 
   private final T matchedObject;
   private final List<CaseAction<T, R>> caseActions;
   private final AtomicReference<Optional<PMatcherResult<R>>> resultRef =
-      new AtomicReference<>(null);
+      new AtomicReference<>(Optional.empty());
 
   public PMatcher(T matchedObject) {
     this.matchedObject = matchedObject;
@@ -32,37 +31,37 @@ public class PMatcher<T, R> {
 
   // ---- match cases:
 
-  public CaseActionAppender matchCase(Class<?> clazz) {
-    return new CaseActionAppender(ClassMatch.of(clazz));
+  public CaseActionAppender<T, R> matchCase(Class<?> clazz) {
+    return new CaseActionAppender<>(matchedObject, caseActions, ClassMatch.of(clazz));
   }
 
-  public CaseActionAppender matchCase(DestructuredMatch.MField... fields) {
-    return new CaseActionAppender(DestructuredMatch.of(fields));
+  public CaseActionAppender<T, R> matchCase(DestructuredMatch.MField... fields) {
+    return new CaseActionAppender<>(matchedObject, caseActions, DestructuredMatch.of(fields));
   }
 
-  public CaseActionAppender matchCase(Predicate<Object> predicate) {
-    return new CaseActionAppender(PredicateMatch.of(predicate));
+  public CaseActionAppender<T, R> matchCase(Predicate<Object> predicate) {
+    return new CaseActionAppender<>(matchedObject, caseActions, PredicateMatch.of(predicate));
   }
 
-  public CaseActionAppender matchValue(Object value) {
-    return new CaseActionAppender(EqualityMatch.of(value));
+  public CaseActionAppender<T, R> matchValue(Object value) {
+    return new CaseActionAppender<>(matchedObject, caseActions, EqualityMatch.of(value));
   }
 
-  public CaseActionAppender matchRef(Object value) {
-    return new CaseActionAppender(EqualityMatch.ofRef(value));
+  public CaseActionAppender<T, R> matchRef(Object value) {
+    return new CaseActionAppender<>(matchedObject, caseActions, EqualityMatch.ofRef(value));
   }
 
   // ---- safe match results:
 
   public Optional<PMatcherResult<R>> getFirstMatch() {
-    if (resultRef.get() != null) {
+    if (resultRef.get().isPresent()) {
       return resultRef.get();
     }
 
     PMatcherResult<R> firstMatchResult = null;
 
-    int index = 0;
-    for (CaseAction<T, R> caseAction : this.caseActions) {
+    for (int index = 0; index < this.caseActions.size(); index++) {
+      CaseAction<T, R> caseAction = this.caseActions.get(index);
       try {
         if (caseAction.matchCase.matches(index, this.matchedObject)) {
           firstMatchResult = onMatchReturn(index, caseAction.matchCase, caseAction.action);
@@ -73,13 +72,8 @@ public class PMatcher<T, R> {
             new PMatcherResult<>(index, caseAction.matchCase.getMatchType(), null, e);
         break;
       }
-      index++;
     }
-    if (firstMatchResult == null) {
-      resultRef.set(Optional.empty());
-    } else {
-      resultRef.set(Optional.of(firstMatchResult));
-    }
+    resultRef.set(Optional.ofNullable(firstMatchResult));
     return resultRef.get();
   }
 
@@ -113,32 +107,6 @@ public class PMatcher<T, R> {
           null,
           new ActionEvaluationException(
               index, matchedObject, "Failed to evaluate action at index: " + index, e));
-    }
-  }
-
-  // ---- internal classes below:
-
-  class CaseActionAppender {
-
-    private final Match match;
-
-    private CaseActionAppender(Match match) {
-      this.match = match;
-    }
-
-    public PMatcher<T, R> thenTransform(Function<T, R> fn) {
-      caseActions.add(new CaseAction<>(match, fn));
-      return new PMatcher<>(matchedObject, caseActions);
-    }
-
-    public PMatcher<T, R> thenSupply(Supplier<R> sup) {
-      caseActions.add(new CaseAction<>(match, t -> sup.get()));
-      return new PMatcher<>(matchedObject, caseActions);
-    }
-
-    public PMatcher<T, R> thenReturn(R retVal) {
-      caseActions.add(new CaseAction<>(match, t -> retVal));
-      return new PMatcher<>(matchedObject, caseActions);
     }
   }
 }
