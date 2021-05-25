@@ -9,7 +9,7 @@ An FP style pattern matcher library for Java. Pattern matching is one of the the
 functional programming. This is inpired
 from [Scala's pattern matching](https://docs.scala-lang.org/tour/pattern-matching.html).
 
-### Dependency (replace `{version}` with the latest version)
+## Dependency (replace `{version}` with the latest version)
 
 Maven
 
@@ -28,13 +28,13 @@ Gradle
 implementation 'io.github.lprakashv:patternmatcher4j:{version}'
 ```
 
-**[See Javadoc](https://lprakashv.github.io/patternmatcher4j/)**
+**[See Javadoc](https://lprakashv.github.io/patternmatcher4j/)** \[ **Outdated (need to fix!)** \]
 
 ## Concept
 
 This is just like switch-case block, but you can do much more than just matching primitive values and enums.
 
-Here, we create a *"Matcher"* for an object (a Java POJO), for which we define *"Match-cases"* which can be of following
+Here, we create a _"Matcher"_ for an object (a Java POJO), for which we define _"Match-cases"_ which can be of following
 type:
 
 1. **Predicate** - a function which takes an object (of the same type of matched object) as input and returns boolean to
@@ -49,37 +49,44 @@ For each **"Match-case"**, we define an **"action"** to perform on original matc
 All the **Match-case** and their corresponding **action** are stored in the matcher's state. There will be no
 computation (matching and evaluation) until we evaluate the matcher. Evaluation operations are:
 
-* **Safe evaluations**:
-    * `.findFirstMatch()` - returns object of type `Option<MatcherResult<R>>`, present in case if any first case matched
-      or exception occurred.
-* **Unsafe evaluations** (throws `MatcherException` on error):
-    * `.get()` - return `Option<R>`, present in case if any first case matched.
-    * `.getOrElse(R defaultValue)`, returns the matched action value or the default value if none of the case matches.
+- **Safe evaluations**:
+  - `.findFirstMatch()` - returns object of type `Option<MatcherResult<R>>`, present in case if any first case matched
+    or exception occurred.
+- **Unsafe evaluations** (throws `MatcherException` on error):
+  - `.get()` - return `Option<R>`, present in case if any first case matched.
+  - `.getOrElse(R defaultValue)`, returns the matched action value or the default value if none of the case matches.
 
-### Example
+## Example
 
 ```java
 // Assume some testpackage.Person objects as : testpackage.Person(name, age, eligible, Object extra)
 
-String stringFromObjectPatternMatching=
+String stringFromObjectPatternMatching =
         new PMatcher<Object, String>(person)
         .matchRef(lalit)
         .thenReturn("Original one and only Lalit found!")
+
         .matchCase(
-            MField.with("name",name->name!=null&&((String)name).toLowerCase().equals("lalit")),
-            MField.with("age",age->age!=null&&(Integer)age< 60),
-            MField.withValue("eligible",true))
+            MField.with("name", name -> name != null && ((String)name).toLowerCase().equals("lalit")),
+            MField.with("age", age -> age != null && (Integer) age< 60),
+            MField.withValue("eligible", true))
         .thenReturn("Young Lalit found")
-        .matchCase(MField.withValue("age",null))
+
+        .matchCase(MField.withValue("age", null))
         .thenReturn("God found")
-        .matchValue(new testpackage.Person("Nitin",26,false))
-        .thenTransform(p->"Uneligible Nitin with age="+((testpackage.Person)p).getAge()+" found")
-        .matchCase(MField.with("extra",String.class))
-        .thenTransform(p->"testpackage.Person with String extra found with extra value="+((testpackage.Person)p).getExtra())
-        .matchCase(testpackage.NonPerson.class)
+
+        .matchValue(new Person("Nitin", 26, false))
+        .thenTransform(p -> "Uneligible Nitin with age=" + ((Person)p).getAge() + " found")
+
+        .matchCase(MField.with("extra", String.class))
+        .thenTransform(p -> "Person with String extra found with extra value=" + ((Person)p).getExtra())
+
+        .matchCase(NonPerson.class)
         .thenReturn("This is not a person")
-        .matchCase(p->p!=null&&((testpackage.Person)p).getAge()>100)
+
+        .matchCase(p -> p != null && ((Person)p).getAge() > 100)
         .thenReturn("Very old person")
+
         .getOrElse("Unknown");
 ```
 
@@ -91,32 +98,32 @@ new PMatcher(InputType matchedObject);
 
 ### Adding Match cases on a matcher
 
-* `.matchCase(MField... fieldMatches)`
-    * Destructured object Match (or object fields Match).
-    * Multiple Field arguments can be given representing each field's matching.
-    * Recursive/nested Match on field using:
-        * `Field.with("fieldName", Class<?>|Predicate<Object>|MField...)`.
-        * For field value matching `Field.withValue("fieldName", valueObject)`.
-    * Each field will have a field name and a Match (nested/recursive matching is also possible!).
-* `.matchValue(Object value)`
-    * Value Match.
-    * To match value equality.
-    * NOTE: this is different than `.matchCase()` to have Object value matching.
-* `.matchRef(Object value)`
-    * Reference Match.
-    * To match reference equality.
-    * NOTE: this is different than `.matchCase()` to have Object reference matching.
-* `.matchCase(Class<?> type)`
-    * Class Match.
-    * To Match class of the matched object.
-* `.matchCase(Predicate<Object> predicate)`
-    * Predicate Match.
-    * Will Match only if the function returns true for the matched object.
+- `.matchCase(MField... fieldMatches)`
+  - Destructured object Match (or object fields Match).
+  - Multiple Field arguments can be given representing each field's matching.
+  - Recursive/nested Match on field using:
+    - `Field.with("fieldName", Class<?>|Predicate<Object>|MField...)`.
+    - For field value matching `Field.withValue("fieldName", valueObject)`.
+  - Each field will have a field name and a Match (nested/recursive matching is also possible!).
+- `.matchValue(Object value)`
+  - Value Match.
+  - To match value equality.
+  - NOTE: this is different than `.matchCase()` to have Object value matching.
+- `.matchRef(Object value)`
+  - Reference Match.
+  - To match reference equality.
+  - NOTE: this is different than `.matchCase()` to have Object reference matching.
+- `.matchCase(Class<?> type)`
+  - Class Match.
+  - To Match class of the matched object.
+- `.matchCase(Predicate<Object> predicate)`
+  - Predicate Match.
+  - Will Match only if the function returns true for the matched object.
 
-##### NOTES
+**NOTES:**
 
-* Each `.matchCase()`, `.matchValue()` and `.matchRef()` will return an instance of `CaseActionAppender` class.
-* `CaseActionAppender` class cannot be instantiated without a `PMatcher` instance.
+- Each `.matchCase()`, `.matchValue()` and `.matchRef()` will return an instance of `CaseActionAppender` class.
+- `CaseActionAppender` class cannot be instantiated without a `PMatcher` instance.
 
 ### Defining actions on "matched" cases
 
@@ -135,10 +142,10 @@ PMatcher<InputType, OutputType> matcher; // some matcher
         .thenReturn( returnValue );
 ```
 
-##### NOTES
+**NOTES:**
 
-* Each action (`thenTransform()`, `thenSupply()` and `thenReturn()`) will return a new `Matcher` instance.
-* Each action defines the action for "only" the `.matchCase()`, `.matchValue()` or `.matchRef()` immediately preceding it.
+- Each action (`thenTransform()`, `thenSupply()` and `thenReturn()`) will return a new `Matcher` instance.
+- Each action defines the action for "only" the `.matchCase()`, `.matchValue()` or `.matchRef()` immediately preceding it.
 
 ### Evaluating a matcher and getting the output
 
@@ -152,22 +159,22 @@ PMatcher<InputType, OutputType> matcher; // some matcher
         matcher.get();
 
 // returns strictly value of type OutputType with defaultValue when input object does not Match any case.
-        matcher.getOrElse(OutputType defaultValue); 
+        matcher.getOrElse(OutputType defaultValue);
 ```
 
-* *MatcherResult<R>* holds the state/result of the case either matched or throws an exception, has methods:
-    * `int getIndex()` - returns the Match-case's index in the matcher block (start from 0).
-    * `MatchType getMatchType()` - returns Match-case's type.
-    * `R getValue()` - returns the value after applying action function, will be `null` on exception.
-    * `MatcherException getException()` - returns the matcher exception if encountered, will be `null` on successful
-      Match action.
+- _MatcherResult<R>_ holds the state/result of the case either matched or throws an exception, has methods:
+  - `int getIndex()` - returns the Match-case's index in the matcher block (start from 0).
+  - `MatchType getMatchType()` - returns Match-case's type.
+  - `R getValue()` - returns the value after applying action function, will be `null` on exception.
+  - `MatcherException getException()` - returns the matcher exception if encountered, will be `null` on successful
+    Match action.
 
-##### NOTES
+**NOTES:**
 
-* The matcher computation is lazy and will not start until `.get()` or `.getOrElse()` invoked on it.
+- The matcher computation is lazy and will not start until `.get()` or `.getOrElse()` invoked on it.
 
 Notable features it's lacking in comparison with true pattern matching (e.g. Scala's or any other functional language
 OOTB pattern matching):
 
-* Inability to destructure lists (lists should be persistent data structures to keep performance in mind).
-* Inability to provide compile time type checking.
+- Inability to destructure lists (lists should be persistent data structures to keep performance in mind).
+- Inability to provide compile time type checking.
