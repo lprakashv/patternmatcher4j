@@ -4,25 +4,22 @@ import io.github.lprakashv.patternmatcher4j.constants.MatchType;
 import io.github.lprakashv.patternmatcher4j.exceptions.DestructuredFieldExceptions;
 import io.github.lprakashv.patternmatcher4j.exceptions.FieldException;
 import io.github.lprakashv.patternmatcher4j.exceptions.MatchException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
+
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class DestructuredMatch implements Match {
 
-  private final Map<String, Field> fieldMatches = new HashMap<>();
+  private final Map<String, MField> fieldMatches = new HashMap<>();
 
-  private DestructuredMatch(Field... fields) {
-    for (Field field : fields) {
+  private DestructuredMatch(MField... fields) {
+    for (MField field : fields) {
       this.fieldMatches.put(field.getFieldName(), field);
     }
   }
 
-  public static DestructuredMatch of(Field... fields) {
+  public static DestructuredMatch of(MField... fields) {
     return new DestructuredMatch(fields);
   }
 
@@ -41,8 +38,7 @@ public class DestructuredMatch implements Match {
     Map<String, java.lang.reflect.Field> allFieldsMap =
         Arrays.stream(declaredFields)
             .collect(Collectors.toMap(java.lang.reflect.Field::getName, df -> df));
-    if (fieldMatches.keySet().stream()
-        .anyMatch(k -> !allFieldsMap.containsKey(k))) {
+    if (fieldMatches.keySet().stream().anyMatch(k -> !allFieldsMap.containsKey(k))) {
       return false;
     }
 
@@ -55,8 +51,9 @@ public class DestructuredMatch implements Match {
         try {
           matched &= fieldMatches.get(field.getName()).getMatch().matches(field.get(object));
         } catch (IllegalAccessException | MatchException e) {
-          matchExceptions
-              .add(new FieldException(field.getName(), object, fieldMatches.get(field.getName()).getMatch(), e));
+          matchExceptions.add(
+              new FieldException(
+                  field.getName(), object, fieldMatches.get(field.getName()).getMatch(), e));
         }
       }
     }
@@ -68,30 +65,30 @@ public class DestructuredMatch implements Match {
     }
   }
 
-  public static class Field {
+  public static class MField {
 
     private final String fieldName;
     private final Match match;
 
-    private Field(String fieldName, Match match) {
+    private MField(String fieldName, Match match) {
       this.fieldName = fieldName;
       this.match = match;
     }
 
-    public static Field with(String fieldName, Class<?> type) {
-      return new Field(fieldName, TypeMatch.of(type));
+    public static MField with(String fieldName, Class<?> type) {
+      return new MField(fieldName, ClassMatch.of(type));
     }
 
-    public static Field with(String fieldName, Field... fields) {
-      return new Field(fieldName, DestructuredMatch.of(fields));
+    public static MField with(String fieldName, MField... fields) {
+      return new MField(fieldName, DestructuredMatch.of(fields));
     }
 
-    public static Field with(String fieldName, Function<Object, Boolean> predicate) {
-      return new Field(fieldName, PredicateMatch.of(predicate));
+    public static MField with(String fieldName, Predicate<Object> predicate) {
+      return new MField(fieldName, PredicateMatch.of(predicate));
     }
 
-    public static Field withValue(String fieldName, Object value) {
-      return new Field(fieldName, ValueMatch.of(value));
+    public static MField withValue(String fieldName, Object value) {
+      return new MField(fieldName, EqualityMatch.of(value));
     }
 
     public String getFieldName() {

@@ -4,10 +4,11 @@ plugins {
     id 'maven-publish'
     id 'jacoco'
     id 'com.github.kt3k.coveralls' version '2.6.3'
+    id "io.freefair.lombok" version "6.0.0-m2"
 }
 
 group 'io.github.lprakashv'
-version '0.0.3'
+version '0.1.0'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -93,4 +94,6 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompileOnly 'org.projectlombok:lombok:1.18.20'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 }

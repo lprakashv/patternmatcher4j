@@ -1,13 +1,16 @@
 package io.github.lprakashv.patternmatcher4j.matcher.models;
 
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
-public class Person {
+@Getter
+@EqualsAndHashCode
+public class Person implements Cloneable {
 
-  public String name;
-  public Integer age;
-  public Boolean eligible;
-  public Object extra;
+  private String name;
+  private Integer age;
+  private Boolean eligible;
+  private Object extra;
 
   public Person(String name, Integer age, Boolean eligible) {
     this.name = name;
@@ -23,23 +26,8 @@ public class Person {
     this.extra = extra;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
-    if (!(o instanceof Person)) {
-      return false;
-    }
-    Person person = (Person) o;
-    return Objects.equals(name, person.name) &&
-        Objects.equals(age, person.age) &&
-        Objects.equals(eligible, person.eligible) &&
-        Objects.equals(extra, person.extra);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(name, age, eligible, extra);
-  }
 }

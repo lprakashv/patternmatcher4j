@@ -2,22 +2,22 @@ package io.github.lprakashv.patternmatcher4j.match;
 
 import io.github.lprakashv.patternmatcher4j.constants.MatchType;
 import io.github.lprakashv.patternmatcher4j.exceptions.MatchException;
-import java.util.Optional;
-import java.util.function.Function;
+
+import java.util.function.Predicate;
 
 public class PredicateMatch implements Match {
 
-  private final Function<Object, Boolean> predicate;
+  private final Predicate<Object> predicate;
 
-  private PredicateMatch(Function<Object, Boolean> predicate) {
+  private PredicateMatch(Predicate<Object> predicate) {
     this.predicate = predicate;
   }
 
-  public static PredicateMatch of(Function<Object, Boolean> predicate) {
+  public static PredicateMatch of(Predicate<Object> predicate) {
     return new PredicateMatch(predicate);
   }
 
-  protected Function<Object, Boolean> getPredicate() {
+  protected Predicate<Object> getPredicate() {
     return predicate;
   }
 
@@ -29,10 +29,7 @@ public class PredicateMatch implements Match {
   @Override
   public boolean matches(int index, Object object) throws MatchException {
     try {
-      return this.getPredicate()
-          .andThen(Optional::ofNullable)
-          .apply(object)
-          .orElse(false);
+      return this.getPredicate() != null && this.getPredicate().test(object);
     } catch (Exception e) {
       throw new MatchException(index, object, this, e);
     }

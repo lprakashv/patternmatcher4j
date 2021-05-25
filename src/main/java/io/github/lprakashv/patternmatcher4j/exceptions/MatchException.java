@@ -2,7 +2,7 @@ package io.github.lprakashv.patternmatcher4j.exceptions;
 
 import io.github.lprakashv.patternmatcher4j.match.Match;
 
-public class MatchException extends MatcherException {
+public class MatchException extends PMatcherException {
 
   private final Match match;
 
