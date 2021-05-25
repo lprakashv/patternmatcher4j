@@ -3,6 +3,7 @@
 target/
 
 build/
+!/build/docs/javadoc/
 
 # Compiled class file
 *.class
