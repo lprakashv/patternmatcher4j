@@ -28,7 +28,7 @@ Gradle
 implementation 'io.github.lprakashv:patternmatcher4j:{version}'
 ```
 
-**[See Javadoc](https://lprakashv.github.io/patternmatcher4j/)**
+**[See Javadoc](https://lprakashv.github.io/patternmatcher4j/)** \[ __Outdated (need to fix!)__ \]
 
 ## Concept
 
@@ -61,7 +61,7 @@ computation (matching and evaluation) until we evaluate the matcher. Evaluation 
 ```java
 // Assume some Person objects as : Person(name, age, eligible, Object extra)
 
-String stringFromObjectPatternMatching=
+String stringFromObjectPatternMatching = 
         new PMatcher<Object, String>(person)
         .matchRef(lalit)
         .thenReturn("Original one and only Lalit found!")
@@ -79,7 +79,7 @@ String stringFromObjectPatternMatching=
         .thenTransform(p -> "Uneligible Nitin with age=" + ((Person)p).getAge() + " found")
         
         .matchCase(MField.with("extra", String.class))
-        .thenTransform(p -> "Person with String extra found with extra value="+((Person)p).getExtra())
+        .thenTransform(p -> "Person with String extra found with extra value=" + ((Person)p).getExtra())
         
         .matchCase(NonPerson.class)
         .thenReturn("This is not a person")
