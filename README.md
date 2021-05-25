@@ -65,21 +65,28 @@ String stringFromObjectPatternMatching=
         new PMatcher<Object, String>(person)
         .matchRef(lalit)
         .thenReturn("Original one and only Lalit found!")
+        
         .matchCase(
-            MField.with("name",name->name!=null&&((String)name).toLowerCase().equals("lalit")),
-            MField.with("age",age->age!=null&&(Integer)age< 60),
-            MField.withValue("eligible",true))
+            MField.with("name", name -> name != null && ((String)name).toLowerCase().equals("lalit")),
+            MField.with("age", age -> age != null && (Integer) age< 60),
+            MField.withValue("eligible", true))
         .thenReturn("Young Lalit found")
-        .matchCase(MField.withValue("age",null))
+        
+        .matchCase(MField.withValue("age", null))
         .thenReturn("God found")
-        .matchValue(new Person("Nitin",26,false))
-        .thenTransform(p->"Uneligible Nitin with age="+((Person)p).getAge()+" found")
-        .matchCase(MField.with("extra",String.class))
-        .thenTransform(p->"Person with String extra found with extra value="+((Person)p).getExtra())
+        
+        .matchValue(new Person("Nitin", 26, false))
+        .thenTransform(p -> "Uneligible Nitin with age=" + ((Person)p).getAge() + " found")
+        
+        .matchCase(MField.with("extra", String.class))
+        .thenTransform(p -> "Person with String extra found with extra value="+((Person)p).getExtra())
+        
         .matchCase(NonPerson.class)
         .thenReturn("This is not a person")
-        .matchCase(p->p!=null&&((Person)p).getAge()>100)
+        
+        .matchCase(p -> p != null && ((Person)p).getAge() > 100)
         .thenReturn("Very old person")
+        
         .getOrElse("Unknown");
 ```
 
