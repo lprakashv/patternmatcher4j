@@ -1,10 +1,19 @@
-name: Library Release Workflow
+name: PatternMatcher4J Workflow
 
 on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
 
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
-  build:
+  build-test-coverageReport:
     runs-on: ubuntu-latest
 
     steps:
@@ -39,5 +48,17 @@ jobs:
           message: ${{ env.TEST_RESULT }}
           color: green
           namedLogo: gradle
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: 'gradle'
+      - name: Build and Test
+        run: ./gradlew build test
       - name: Publish to Sonatype
         run: ./gradlew publish -PossrhUser="${ossrhUser}" -PossrhPassword="${ossrhPassword}" -Psigning.keyId="${signing_keyId}" -Psigning.password="${signing_password}" -Psigning.secretKeyRingFile="${signing_secretKeyRingFile}" --stacktrace
