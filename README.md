@@ -1,6 +1,6 @@
 [![GitHub](https://img.shields.io/github/license/lprakashv/patternmatcher4j?style=flat-square)](LICENSE)
-[![Travis (.com) branch](https://img.shields.io/travis/com/lprakashv/patternmatcher4j/master?style=flat-square)](https://travis-ci.com/lprakashv/patternmatcher4j)
-[![Coveralls github branch](https://img.shields.io/coveralls/github/lprakashv/patternmatcher4j/master?style=flat-square)](https://coveralls.io/github/lprakashv/patternmatcher4j?branch=master)
+![Test Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/lprakashv/d79f9f3049bf190b417943a2d3b21481/raw/patternmatcher4j__heads_master.json)
+![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/lprakashv/2f297a650e2c9fea0b3b817691fada74/raw/patternmatcher4j__heads_master.json)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.lprakashv/patternmatcher4j?style=flat-square)](https://search.maven.org/search?q=g:%22io.github.lprakashv%22%20AND%20a:%22patternmatcher4j%22)
 
 # patternmatcher4j "Switch-Case on Steroids"
