@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: read-write
 
 jobs:
   build-test-coverageReport:
@@ -24,10 +24,46 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           cache: 'gradle'
-      - name: Build and Test
-        run: ./gradlew build test
-      - name: Test Coverage Report
-        run: ./gradlew test jacocoTestReport
+      - name: Run build+tests and update env for badge
+        run: |
+          # ....
+          # BUILD SUCCESSFUL in 20s
+          # 9 actionable tasks: 9 executed
+          TEST_OUTPUT="$(./gradlew build test)"
+          echo "TEST_OUTPUT:"
+          echo "$TEST_OUTPUT"
+          SUMMARY=$(echo "$TEST_OUTPUT" | tail -2 | head -1)
+          echo "SUMMARY:"
+          echo "$SUMMARY"
+          TEST_RESULT=$(echo "$SUMMARY" | cut -d " " -f 2)
+          echo "REST_RESULT:"
+          echo "$TEST_RESULT"
+          echo "TEST_RESULT=$(echo ${TEST_RESULT})" >> $GITHUB_ENV
+      - name: Generate coverage report and get badge
+        run: |
+          # ....
+          COVERAGE_OUTPUT="$(./gradlew test jacocoTestReport)"
+          echo "COVERAGE_OUTPUT:"
+          echo "$COVERAGE_OUTPUT"
+          SUMMARY=$(echo "$COVERAGE_OUTPUT" | tail -2 | head -1)
+          echo "SUMMARY:"
+          echo "$SUMMARY"
+          COVERAGE=$(echo "$SUMMARY" | cut -d " " -f 2)
+          echo "COVERAGE:"
+          echo "$COVERAGE"
+          echo "COVERAGE=$(echo ${COVERAGE})" >> $GITHUB_ENV
+          # var REF = 'refs/pull/27/merge.json';
+          REF=${{ github.ref }}
+          # console.log('github.ref: ' + REF);
+          echo "github.ref: $REF"
+          # var PATHS = REF.split('/');
+          IFS='/' read -ra PATHS <<< "$REF"
+          # var BRANCH_NAME = PATHS[1] + '_' + PATHS[2];
+          BRANCH_NAME="${PATHS[1]}_${PATHS[2]}"
+          # console.log(BRANCH_NAME); // 'pull_27'
+          echo $BRANCH_NAME
+          # process.env.BRANCH = 'pull_27';
+          echo "BRANCH=$(echo ${BRANCH_NAME})" >> $GITHUB_ENV
       - name: Create the Badge
         uses: schneegans/dynamic-badges-action@v1.0.0
         with:
