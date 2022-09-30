@@ -4,11 +4,13 @@ import io.github.lprakashv.patternmatcher4j.exceptions.PMatcherException;
 import io.github.lprakashv.patternmatcher4j.match.DestructuredMatch.MField;
 import io.github.lprakashv.patternmatcher4j.matcher.PMatcher;
 import lombok.Data;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.AssertTrue.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PMatcherTest {
 
@@ -48,56 +50,56 @@ public class PMatcherTest {
   public void testMatchFieldPredicate() throws PMatcherException, CloneNotSupportedException {
     String result = createPatternMatchForPerson(lalit.clone()).getOrElse("Unknown");
 
-    Assert.assertEquals("Young Lalit found", result);
+    assertEquals("Young Lalit found", result);
   }
 
   @Test
   public void testMatchFieldValue() throws PMatcherException {
     String result = createPatternMatchForPerson(god).getOrElse("Unknown");
 
-    Assert.assertEquals("God found", result);
+    assertEquals("God found", result);
   }
 
   @Test
   public void testMatchType() throws PMatcherException {
     String result = createPatternMatchForPerson(new NonPerson()).getOrElse("Unknown");
 
-    Assert.assertEquals("This is not a person", result);
+    assertEquals("This is not a person", result);
   }
 
   @Test
   public void testMatchValue() throws PMatcherException {
     String result = createPatternMatchForPerson(nitin).getOrElse("Unknown");
 
-    Assert.assertEquals("Uneligible Nitin with age=26 found", result);
+    assertEquals("Uneligible Nitin with age=26 found", result);
   }
 
   @Test
   public void testMatchFieldType() throws PMatcherException {
     String result = createPatternMatchForPerson(extraPerson).getOrElse("Unknown");
 
-    Assert.assertEquals("testpackage.Person with String extra found with extra value=Something extra", result);
+    assertEquals("testpackage.Person with String extra found with extra value=Something extra", result);
   }
 
   @Test
   public void testMatchPredicate() throws PMatcherException {
     String result = createPatternMatchForPerson(veryOld).getOrElse("Unknown");
 
-    Assert.assertEquals("Very old person", result);
+    assertEquals("Very old person", result);
   }
 
   @Test
   public void testMatchDefault() throws PMatcherException {
     String result = createPatternMatchForPerson(new Person("", 0, true)).getOrElse("Unknown");
 
-    Assert.assertEquals("Unknown", result);
+    assertEquals("Unknown", result);
   }
 
   @Test
   public void testMatchRef() throws PMatcherException {
     String result = createPatternMatchForPerson(lalit).getOrElse("Unknown");
 
-    Assert.assertEquals("Original one and only Lalit found!", result);
+    assertEquals("Original one and only Lalit found!", result);
   }
 
   interface Entity {
@@ -146,9 +148,11 @@ public class PMatcherTest {
     Optional<RetVal> personRetVal = matchResult(person);
     Optional<RetVal> npRetVal = matchResult(np);
 
-    Assert.assertTrue("Person should be found", personRetVal.isPresent());
-    Assert.assertEquals(new RetVal("29 years old Lalit Vatsal", 25, true), personRetVal.get());
-    Assert.assertEquals(new RetVal("", 0, false), npRetVal.get());
+    assertAll(
+            () -> assertTrue(personRetVal.isPresent(), "Person should be found"),
+            () -> assertEquals(new RetVal("29 years old Lalit Vatsal", 25, true), personRetVal.get()),
+            () -> assertEquals(new RetVal("", 0, false), npRetVal.get())
+    );
   }
 
   enum Animal {
@@ -162,6 +166,6 @@ public class PMatcherTest {
         .matchValue(Animal.DOG).thenReturn("Found a Dog!").matchValue(Animal.ELEPHANT).thenReturn("Found an Elephant!")
         .getOrElse("Unnkown Animal");
 
-    Assert.assertEquals("Found a Dog!", message);
+    assertEquals("Found a Dog!", message);
   }
 }
