@@ -1,6 +1,8 @@
 [![GitHub](https://img.shields.io/github/license/lprakashv/patternmatcher4j?style=flat-square)](LICENSE)
-![Test Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/lprakashv/d79f9f3049bf190b417943a2d3b21481/raw/patternmatcher4j__heads_master.json)
-![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/lprakashv/2f297a650e2c9fea0b3b817691fada74/raw/patternmatcher4j__heads_master.json)
+![Build and Tests Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/lprakashv/d79f9f3049bf190b417943a2d3b21481/raw/patternmatcher4j__heads_master.json)
+![Line Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/lprakashv/2f297a650e2c9fea0b3b817691fada74/raw/patternmatcher4j__heads_master_lc.json)
+![Branch Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/lprakashv/2f297a650e2c9fea0b3b817691fada74/raw/patternmatcher4j__heads_master_bc.json)
+![Method Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/lprakashv/2f297a650e2c9fea0b3b817691fada74/raw/patternmatcher4j__heads_master_mc.json)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.lprakashv/patternmatcher4j?style=flat-square)](https://search.maven.org/search?q=g:%22io.github.lprakashv%22%20AND%20a:%22patternmatcher4j%22)
 
 # patternmatcher4j "Switch-Case on Steroids"

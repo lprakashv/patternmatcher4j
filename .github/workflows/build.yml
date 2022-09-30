@@ -45,10 +45,22 @@ jobs:
           COVERAGE_OUTPUT="$(./gradlew test jacocoLogTestCoverage)"
           echo "COVERAGE_OUTPUT:"
           echo "$COVERAGE_OUTPUT"
-          COVERAGE=$(echo "$COVERAGE_OUTPUT" | grep -A4 "Test Coverage" | tail -1 | cut -d ":" -f 2)
-          echo "COVERAGE:"
-          echo "$COVERAGE"
-          echo "COVERAGE=$(echo ${COVERAGE})" >> $GITHUB_ENV
+          
+          LINE_COVERAGE=$(echo "$COVERAGE_OUTPUT" | grep -A4 "Test Coverage" | tail -1 | cut -d ":" -f 2)
+          echo "LINE_COVERAGE:"
+          echo "$LINE_COVERAGE"
+          echo "LINE_COVERAGE=$(echo ${LINE_COVERAGE})" >> $GITHUB_ENV
+          
+          BRANCH_COVERAGE=$(echo "$COVERAGE_OUTPUT" | grep -A3 "Test Coverage" | tail -1 | cut -d ":" -f 2)
+          echo "BRANCH_COVERAGE:"
+          echo "$BRANCH_COVERAGE"
+          echo "BRANCH_COVERAGE=$(echo ${BRANCH_COVERAGE})" >> $GITHUB_ENV
+          
+          LINE_COVERAGE=$(echo "$COVERAGE_OUTPUT" | grep -A2 "Test Coverage" | tail -1 | cut -d ":" -f 2)
+          echo "METHOD_COVERAGE:"
+          echo "$METHOD_COVERAGE"
+          echo "METHOD_COVERAGE=$(echo ${METHOD_COVERAGE})" >> $GITHUB_ENV
+          
           # var REF = 'refs/pull/27/merge.json';
           REF=${{ github.ref }}
           # console.log('github.ref: ' + REF);
@@ -61,24 +73,44 @@ jobs:
           echo $BRANCH_NAME
           # process.env.BRANCH = 'pull_27';
           echo "BRANCH=$(echo ${BRANCH_NAME})" >> $GITHUB_ENV
-      - name: Create the Badge
-        uses: schneegans/dynamic-badges-action@v1.0.0
-        with:
-          auth: ${{ secrets.GIST_SECRET }}
-          gistID: 2f297a650e2c9fea0b3b817691fada74
-          filename: patternmatcher4j__${{ env.BRANCH }}.json
-          label: Test Coverage
-          message: ${{ env.COVERAGE }}
-          color: green
-          namedLogo: gradle
-      - name: Create the Test Badge
+      - name: Create Build and Tests Badge
         uses: schneegans/dynamic-badges-action@v1.0.0
         with:
           auth: ${{ secrets.GIST_SECRET }}
           gistID: d79f9f3049bf190b417943a2d3b21481
           filename: patternmatcher4j__${{ env.BRANCH }}.json
-          label: Tests
+          label: Build and Tests
           message: ${{ env.TEST_RESULT }}
+          color: green
+          namedLogo: gradle
+      - name: Create Line Coverage Badge
+        uses: schneegans/dynamic-badges-action@v1.0.0
+        with:
+          auth: ${{ secrets.GIST_SECRET }}
+          gistID: 2f297a650e2c9fea0b3b817691fada74
+          filename: patternmatcher4j__${{ env.BRANCH }}_lc.json
+          label: Line Coverage
+          message: ${{ env.LINE_COVERAGE }}
+          color: green
+          namedLogo: gradle
+      - name: Create Branch Coverage Badge
+        uses: schneegans/dynamic-badges-action@v1.0.0
+        with:
+          auth: ${{ secrets.GIST_SECRET }}
+          gistID: 2f297a650e2c9fea0b3b817691fada74
+          filename: patternmatcher4j__${{ env.BRANCH }}_bc.json
+          label: Branch Coverage
+          message: ${{ env.BRANCH_COVERAGE }}
+          color: green
+          namedLogo: gradle
+      - name: Create Method Coverage Badge
+        uses: schneegans/dynamic-badges-action@v1.0.0
+        with:
+          auth: ${{ secrets.GIST_SECRET }}
+          gistID: 2f297a650e2c9fea0b3b817691fada74
+          filename: patternmatcher4j__${{ env.BRANCH }}_mc.json
+          label: Method Coverage
+          message: ${{ env.METHOD_COVERAGE }}
           color: green
           namedLogo: gradle
   publish:
@@ -94,4 +126,4 @@ jobs:
       - name: Build and Test
         run: ./gradlew build test
       - name: Publish to Sonatype
-        run: ./gradlew publish -PossrhUser="${ossrhUser}" -PossrhPassword="${ossrhPassword}" -Psigning.keyId="${signing_keyId}" -Psigning.password="${signing_password}" -Psigning.secretKeyRingFile="${signing_secretKeyRingFile}" --stacktrace
+        run: ./gradlew publish -PossrhUser="${{ env.OSSRH_USER }}" -PossrhPassword="${{ env.OSSRH_PASS }}" -Psigning.keyId="${{ env.SIGNING_KEY_ID }}" -Psigning.password="${{ env.SIGNING_PASS }}" -Psigning.secretKeyRingFile=".github/seckeyring.gpg" --stacktrace
