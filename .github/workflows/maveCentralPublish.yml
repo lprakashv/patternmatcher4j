@@ -1,0 +1,29 @@
+name: PatternMatcher4J Artifact Sign and Publish Workflow
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sign-and-publish-to-sonatype:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: 'gradle'
+      - name: Build and Test
+        run: ./gradlew build test
+      - name: Publish to Sonatype
+        env:
+          OSSRH_USER: ${{ secrets.OSSRH_USER }}
+          OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
+          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+          SIGNING_PASS: ${{ secrets.SIGNING_PASS }}
+        run: ./gradlew publish -PossrhUser="$OSSRH_USER" -PossrhPassword="$OSSRH_PASS" -Psigning.keyId="$SIGNING_KEY_ID" -Psigning.password="$SIGNING_PASS" -Psigning.secretKeyRingFile=".github/seckeyring.gpg" --stacktrace
