@@ -45,10 +45,7 @@ jobs:
           COVERAGE_OUTPUT="$(./gradlew test jacocoLogTestCoverage)"
           echo "COVERAGE_OUTPUT:"
           echo "$COVERAGE_OUTPUT"
-          SUMMARY=$(echo "$COVERAGE_OUTPUT")
-          echo "SUMMARY:"
-          echo "$SUMMARY"
-          COVERAGE=$(echo "$SUMMARY")
+          COVERAGE=$(echo "$COVERAGE_OUTPUT" | grep -A4 "Test Coverage" | tail -1 | cut -d ":" -f 2)
           echo "COVERAGE:"
           echo "$COVERAGE"
           echo "COVERAGE=$(echo ${COVERAGE})" >> $GITHUB_ENV
