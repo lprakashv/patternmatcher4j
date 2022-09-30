@@ -42,13 +42,13 @@ jobs:
       - name: Generate coverage report and get badge
         run: |
           # ....
-          COVERAGE_OUTPUT="$(./gradlew test jacocoTestReport)"
+          COVERAGE_OUTPUT="$(./gradlew test jacocoLogTestCoverage)"
           echo "COVERAGE_OUTPUT:"
           echo "$COVERAGE_OUTPUT"
-          SUMMARY=$(echo "$COVERAGE_OUTPUT" | tail -2 | head -1)
+          SUMMARY=$(echo "$COVERAGE_OUTPUT")
           echo "SUMMARY:"
           echo "$SUMMARY"
-          COVERAGE=$(echo "$SUMMARY" | cut -d " " -f 2)
+          COVERAGE=$(echo "$SUMMARY")
           echo "COVERAGE:"
           echo "$COVERAGE"
           echo "COVERAGE=$(echo ${COVERAGE})" >> $GITHUB_ENV
@@ -73,7 +73,7 @@ jobs:
           label: Test Coverage
           message: ${{ env.COVERAGE }}
           color: green
-          namedLogo: scoverage
+          namedLogo: gradle
       - name: Create the Test Badge
         uses: schneegans/dynamic-badges-action@v1.0.0
         with:
